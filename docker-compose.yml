@@ -1,0 +1,36 @@
+version: "3"
+services:
+  db:
+    restart: always
+    container_name: nlp-db
+    image: postgres:9.6
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=nlp
+    expose:
+      - "5432"
+
+  nginx:
+    image: nginx:latest
+    container_name: nlp-nginx
+    ports:
+      - "8000:8888"
+    volumes:
+      - ./nginx/site-enabled:/etc/nginx/conf.d
+    depends_on:
+      - web
+
+  web:
+    # replace username/repo:tag with your name and image details
+    image: urdu-tts
+    container_name: nlp-app
+    environment:
+      - DATABASE=db
+    depends_on:
+      - db
+    expose:
+      - "8888"
+    entrypoint: ./entry_point.sh
+    command: gunicorn nlp.wsgi:application -w 2 -b :8888
+    restart: always
