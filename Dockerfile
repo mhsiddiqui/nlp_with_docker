@@ -1,5 +1,5 @@
 FROM ubuntu:xenial
-MAINTAINER Martin Jansche <mjansche@google.com>
+MAINTAINER Muhammad Hassan <mhassan.eeng@gmail.com>
 
 #ADD goog_af_unison_wav_22k.tar /usr/local/src/
 
@@ -32,21 +32,35 @@ RUN apt-get update && apt-get install -y \
       alsa-utils \
       alsa* \
       zlib1g-dev \
-    && rm -rf /var/lib/apt/lists/*
+      apt-utils \
+      libpcre3 \
+      libpcre3-dev \
+      python-pip \
+      nginx \
+      supervisor \
+      libmysqlclient-dev \
+      libpq-dev \
+      sqlite3 && \
+      pip install -U pip setuptools \
+      && rm -rf /var/lib/apt/lists/*
 
 
 COPY usr_local /usr/local/
 
 # Fetch and prepare Festival & friends
 WORKDIR /usr/local/src
-RUN tar -xvsf festlex_CMU.tar.gz 
-RUN tar -xvsf festlex_POSLEX.tar.gz
-RUN tar -xvsf festlex_OALD.tar.gz 
-RUN tar -xvsf festvox_rablpc16k.tar.gz
-RUN tar -xvsf festvox_kallpc16k.tar.gz
+
+RUN tar -xvsf festlex_CMU.tar.gz && \
+    tar -xvsf festlex_POSLEX.tar.gz && \
+    tar -xvsf festlex_OALD.tar.gz &&  \
+    tar -xvsf festvox_rablpc16k.tar.gz && \
+    tar -xvsf festvox_pucit_indic_ur_cg.tar.gz && \
+    tar -xvsf festvox_pucit_indic_urm_cg.tar.gz && \
+    tar -xvsf festvox_pucit_indic_urs_cg.tar.gz
 
 ENV ESTDIR /usr/local/src/speech_tools
 ENV FESTVOXDIR /usr/local/src/festvox
+ENV FESTIVALDIR /usr/local/src/festival
 ENV SPTKDIR /usr/local
 
 # Build and install SPTK
@@ -65,5 +79,14 @@ RUN ./configure && make
 WORKDIR /usr/local/src/festvox
 RUN ./configure && make
 
-#WORKDIR /usr/local/src
-#RUN rm -fr SPTK-3.10
+WORKDIR /usr/local/src
+RUN rm -fr SPTK-3.10
+
+WORKDIR /home/docker/code/
+COPY nlp/ /home/docker/code/
+COPY nginx /home/docker/code/
+
+RUN pip install -r requirements.txt
+
+ENV DEBUG=False
+ENV DJANGO_SETTINGS_MODULE='nlp.settings'
