@@ -15,7 +15,7 @@ services:
     image: nginx:latest
     container_name: nlp-nginx
     ports:
-      - "8000:8888"
+      - "8000:8000"
     volumes:
       - ./nginx/site-enabled:/etc/nginx/conf.d
     depends_on:
@@ -23,7 +23,7 @@ services:
 
   web:
     # replace username/repo:tag with your name and image details
-    image: urdu-tts
+    build: .
     container_name: nlp-app
     environment:
       - DATABASE=db
