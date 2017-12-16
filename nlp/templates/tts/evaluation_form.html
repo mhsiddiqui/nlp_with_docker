@@ -1,0 +1,99 @@
+{% extends 'tts/tts.html' %}
+{% load static %}
+{% block project_page %}
+    Select Voice:&nbsp;&nbsp;
+    <div class="form-check form-check-inline">
+        <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="voice_option" id="voice_1"
+                   value="voice_pucit_indic_ur_cg" checked> Voice 1 (Fast)
+        </label>
+    </div>
+    <div class="form-check form-check-inline">
+        <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="voice_option" id="voice_2"
+                   value="voice_pucit_indic_urs_cg"> Voice 1 (Slow)
+        </label>
+    </div>
+    <div class="form-check form-check-inline">
+        <label class="form-check-label">
+            <input class="form-check-input" type="radio" name="voice_option" id="voice_3"
+                   value="voice_pucit_indic_urm_cg"> Voice 2
+        </label>
+    </div>
+    <table class="table table-bordered">
+        <thead class="thead-inverse">
+        <tr>
+            <th width="700" style="text-align: center">Text</th>
+{#            <th width="150">Voice</th>#}
+            <th width="200" style="text-align: center">Play</th>
+            <th style="text-align: center">Evaluate</th>
+        </tr>
+        </thead>
+        {% for sentence in sentences %}
+            <tr class="voice_row" id="{{ sentence.id }}">
+                <td style="text-align: center">
+                    <div id="text_{{ sentence.id }}">{{ sentence.text }}</div>
+                </td>
+{#                <td>#}
+{#                    <label class="form-check-label">#}
+{#                        <input class="form-check-input" type="radio" name="{{ sentence.id }}_voice_option" id="{{ sentence.id }}_voice_1"#}
+{#                               value="voice_pucit_indic_ur_cg" checked> Voice 1 (Fast)#}
+{#                    </label><br/>#}
+{#                    <label class="form-check-label">#}
+{#                        <input class="form-check-input" type="radio" name="{{ sentence.id }}_voice_option" id="{{ sentence.id }}_voice_2"#}
+{#                               value="voice_pucit_indic_urs_cg"> Voice 1 (Slow)#}
+{#                    </label><br/>#}
+{#                    <label class="form-check-label">#}
+{#                        <input class="form-check-input" type="radio" name="{{ sentence.id }}_voice_option" id="{{ sentence.id }}_voice_3"#}
+{#                               value="voice_pucit_indic_urm_cg"> Voice 2#}
+{#                    </label>#}
+{#                </td>#}
+                <td style="text-align: center">
+                    <button class="btn btn-outline-primary btn-sm play-btn"
+                            id="play_sound_{{ sentence.id }}" type="button"
+                            onclick="play_evaluation_sound({{ sentence.id }})">
+                        <i class="fa fa-play" aria-hidden="true"></i>
+                        <img id="loading_img_{{ sentence.id }}" style="width: 20px; height: 20px; display: none;"
+                             src="{% static "img/loading_gif_small.gif" %}">
+                    </button>
+                    <div id="output_div_{{ sentence.id }}">
+
+                    </div>
+                </td>
+                <td style="text-align: center">
+                    <table border="0">
+                        {% for prop in properties %}
+                            <tr>
+                                <td>{{ prop }}</td>
+                                {% for i in marks %}
+                                    <td>
+                                        <div class="form-check form-check-inline">
+                                            <label class="form-check-label">
+                                                <input class="form-check-input" type="radio"
+                                                       name="{{ prop|lower }}_{{ sentence.id }}" id="rate_{{ prop }}_{{ sentence.id }}_{{ i }}"
+                                                       value="{{ i }}" {% if i == 5 %}checked{% endif %}>
+                                                {{ i }}
+                                            </label>
+                                        </div>
+                                    </td>
+                                {% endfor %}
+                            </tr>
+                        {% endfor %}
+                    </table>
+                </td>
+            </tr>
+        {% endfor %}
+    </table>
+    <table>
+        <tr>
+            <td>
+                <button class="btn btn-outline-primary btn-lg play-btn" onclick="submit_evaluation_form()">Submit</button>
+            </td>
+            <td>
+                <div id="loading-div" style="display: none;">
+                    <img src="{% static "img/loader.gif" %}">
+                </div>
+            </td>
+        </tr>
+    </table>
+{% endblock %}

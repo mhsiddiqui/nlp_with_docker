@@ -1,0 +1,6 @@
+nlp/*.pyc
+.idea
+nlp/db.sqlite3
+nlp/media
+nlp/tmp/input/*
+nlp/tmp/output/*

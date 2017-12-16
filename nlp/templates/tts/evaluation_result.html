@@ -1,0 +1,50 @@
+{% extends 'tts/tts.html' %}
+{% load static %}
+{% block project_page %}
+
+    <div class="btn-group" role="group" aria-label="Basic example">
+        <a type="button"
+           class="btn {% if voice == 'voice_pucit_indic_ur_cg' %}btn-primary{% else %}btn-secondary{% endif %}"
+           href="{% url 'evaluation_result_by_voice' 'voice_pucit_indic_ur_cg' %}">Voice 1 (Fast)</a>
+        <a type="button"
+           class="btn {% if voice == 'voice_pucit_indic_urs_cg' %}btn-primary{% else %}btn-secondary{% endif %}"
+           href="{% url 'evaluation_result_by_voice' 'voice_pucit_indic_urs_cg' %}">Voice 1 (Slow)</a>
+        <a type="button"
+           class="btn {% if voice == 'voice_pucit_indic_urm_cg' %}btn-primary{% else %}btn-secondary{% endif %}"
+           href="{% url 'evaluation_result_by_voice' 'voice_pucit_indic_urm_cg' %}">Voice 2</a>
+    </div>
+    <table class="table table-bordered" style="margin-top: 10px;">
+        <thead class="thead-inverse">
+        <tr>
+            <th width="400">Text</th>
+            <th width="100">Understandability</th>
+            <th>Naturalness</th>
+            <th>Pleasantness</th>
+            <th>Overall</th>
+        </tr>
+        </thead>
+        {% for r in result %}
+
+            <tr>
+                <td>{{ r.text }}</td>
+                <td>{{ r.evaluation_of_data__understandability__avg }}</td>
+                <td>{{ r.evaluation_of_data__naturalness__avg }}</td>
+                <td>{{ r.evaluation_of_data__pleasantness__avg }}</td>
+                <td>{{ r.evaluation_of_data__overall__avg }}</td>
+            </tr>
+        {% empty %}
+            <tr>
+                <td colspan="6" style="text-align: center">No Data</td>
+            </tr>
+        {% endfor %}
+        {% if overall_result %}
+        <tr>
+            <td>Total Averages</td>
+            <td>{{ overall_result.evaluation_of_data__understandability__avg }}</td>
+            <td>{{ overall_result.evaluation_of_data__naturalness__avg }}</td>
+            <td>{{ overall_result.evaluation_of_data__pleasantness__avg }}</td>
+            <td>{{ overall_result.evaluation_of_data__overall__avg }}</td>
+        </tr>
+        {% endif %}
+    </table>
+{% endblock %}
