@@ -83,10 +83,10 @@ WORKDIR /usr/local/src
 RUN rm -fr SPTK-3.10
 
 WORKDIR /home/docker/code/
-COPY nlp/ /home/docker/code/
+COPY urdu_tts/ /home/docker/code/
 COPY nginx /home/docker/code/
 
 RUN pip install -r requirements.txt
 
 ENV DEBUG=False
-ENV DJANGO_SETTINGS_MODULE='nlp.settings'
+ENV DJANGO_SETTINGS_MODULE='urdu_tts.settings'
