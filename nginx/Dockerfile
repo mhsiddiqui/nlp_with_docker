@@ -1,2 +1,2 @@
 FROM nginx:latest
-COPY site-enabled/nlp.conf /etc/nginx/conf.d/
+COPY site-enabled/tts.conf /etc/nginx/conf.d/

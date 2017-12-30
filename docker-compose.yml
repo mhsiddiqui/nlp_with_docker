@@ -2,18 +2,18 @@ version: "3"
 services:
   db:
     restart: always
-    container_name: nlp-db
+    container_name: tts-db
     image: postgres:9.6
     environment:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
-      - POSTGRES_DB=nlp
+      - POSTGRES_DB=tts
     expose:
       - "5432"
 
   nginx:
     image: nginx:latest
-    container_name: nlp-nginx
+    container_name: tts-nginx
     ports:
       - "8000:8000"
     volumes:
@@ -24,7 +24,7 @@ services:
   web:
     # replace username/repo:tag with your name and image details
     build: .
-    container_name: nlp-app
+    container_name: tts-app
     environment:
       - DATABASE=db
     depends_on:
@@ -32,5 +32,5 @@ services:
     expose:
       - "8888"
     entrypoint: ./entry_point.sh
-    command: gunicorn nlp.wsgi:application -w 2 -b :8888
+    command: gunicorn urdu_tts.wsgi:application -w 2 -b :8888
     restart: always
