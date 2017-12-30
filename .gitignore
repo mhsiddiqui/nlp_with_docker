@@ -1,6 +1,6 @@
 *.pyc
 .idea
-nlp/db.sqlite3
-nlp/media
-nlp/tmp/input/*
-nlp/tmp/output/*
+urdu_tts/db.sqlite3
+urdu_tts/media
+urdu_tts/tmp/input/*
+urdu_tts/tmp/output/*
