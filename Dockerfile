@@ -55,7 +55,6 @@ RUN tar -xvsf festlex_CMU.tar.gz && \
     tar -xvsf festlex_OALD.tar.gz &&  \
     tar -xvsf festvox_rablpc16k.tar.gz && \
     tar -xvsf festvox_pucit_indic_ur_cg.tar.gz && \
-    tar -xvsf festvox_pucit_indic_urm_cg.tar.gz && \
     tar -xvsf festvox_pucit_indic_urs_cg.tar.gz
 
 ENV ESTDIR /usr/local/src/speech_tools
