@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% load static %}
+{% block content %}
+    <div class="card">
+        <div class="card-block">
+            <h4 class="card-title">Download</h4>
+            <div class="card-text">
+                <table class="table table-bordered">
+                    <thead>
+                        <tr>
+                            <th>Detail</th>
+                            <th>Download</th>
+                        </tr>
+                    </thead>
+                    <tr>
+                        <td>Voice Package Voice 1 (Slow)</td>
+                        <td><a class="btn btn-link" href="{% static 'voice_packages/festvox_pucit_indic_ur_cg.tar.gz' %}">Download</a></td>
+                    </tr>
+                    <tr>
+                        <td>Voice Package Voice 1 (Fast)</td>
+                        <td><a class="btn btn-link" href="{% static 'voice_packages/festvox_pucit_indic_urs_cg.tar.gz' %}">Download</a></td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+    </div>
+{% endblock %}

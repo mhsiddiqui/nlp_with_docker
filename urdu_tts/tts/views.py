@@ -2,8 +2,6 @@
 from __future__ import unicode_literals
 
 import json
-import os
-import uuid
 
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
@@ -11,19 +9,17 @@ from django.http import HttpResponse
 from ipware.ip import get_ip
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-from rest_framework import generics, response
+from rest_framework import generics, response, status, renderers
 
 from tts.models import GeneratedVoice, EvaluationData, Evaluation
-from urdu_tts.settings import BASE_DIR, FESTIVALDIR
-from tts.serializers import GeneratedVoiceSerializer
+from tts.serializers import GeneratedVoiceSerializer, GenerateVoiceSerializer
 from tts.utils import UtilMethods
+from urdu_tts.settings import SOUND_OPTIONS
 from django.shortcuts import render
 
 # Create your views here.
 from django.views import View
 from django.views.generic import TemplateView
-
-from tts.text_processor.processor import get_processed_data
 
 
 class TTSPage(TemplateView):
@@ -31,7 +27,7 @@ class TTSPage(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(TTSPage, self).get_context_data(**kwargs)
-        context.update({'subtab': 'intro', 'navlink': 'project'})
+        context.update({'navlink': 'main'})
         return context
 
 
@@ -40,28 +36,33 @@ class DemoPage(TemplateView):
 
     def get_context_data(self, **kwargs):
         context = super(DemoPage, self).get_context_data(**kwargs)
-        context.update({'subtab': 'demo', 'navlink': 'project'})
+        context.update({'navlink': 'demo', 'sounds': dict(SOUND_OPTIONS)})
         return context
 
 
-class GenerateVoice(generics.GenericAPIView):
+class GenerateVoiceJson(generics.GenericAPIView):
 
-    serializer_class = GeneratedVoiceSerializer
-    template_name = 'tts/voice_demo.html'
+    serializer_class = GenerateVoiceSerializer
     authentication_classes = ()
     permission_classes = ()
 
     def post(self, request, *args, **kwargs):
-        UtilMethods.create_direcories_if_does_not_exist()
+        UtilMethods.create_temp_directories_if_does_not_exist()
         self.delete_old_generated_voice()
         serialized = self.get_serializer(data=request.data)
         if serialized.is_valid(raise_exception=True):
-            serialized.save()
-            return response.Response(serialized.data)
-        return response.Response()
+            generated_obj = serialized.save()
+            serialized_gen_obj = GeneratedVoiceSerializer(generated_obj, context={'request': request})
+            return response.Response(data=serialized_gen_obj.data)
+        return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete_old_generated_voice(self):
         GeneratedVoice.objects.filter(ip=get_ip(self.request)).delete()
+
+
+class GenerateVoiceHTML(GenerateVoiceJson):
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'tts/voice_demo.html'
 
 
 class EvaluateVoice(View):
@@ -115,3 +116,20 @@ class EvaluationResult(View):
         data.update({'voice': voice, 'subtab': 'result'})
         return data
 
+
+class APIView(TemplateView):
+    template_name = 'tts/api.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(APIView, self).get_context_data(**kwargs)
+        context.update({'navlink': 'api', 'sounds': dict(SOUND_OPTIONS), 'host': self.request.get_host()})
+        return context
+
+
+class DownloadView(TemplateView):
+    template_name = 'tts/download.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(DownloadView, self).get_context_data(**kwargs)
+        context.update({'navlink': 'download'})
+        return context

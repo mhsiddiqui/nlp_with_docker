@@ -1,6 +1,7 @@
-{% extends 'tts/tts.html' %}
+{% extends "base.html" %}
 {% load static %}
-{% block project_page %}
+{% load custom_filters %}
+{% block content %}
     <div id="required-error" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
@@ -13,24 +14,14 @@
         </button>
         <strong>Error!</strong> No English Alphabet is allowed
     </div>
-    <div class="form-check form-check-inline">
-        <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="voice_option" id="voice_1"
-                   value="voice_pucit_indic_ur_cg" checked> Voice 1 (Fast)
-        </label>
-    </div>
-    <div class="form-check form-check-inline">
-        <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="voice_option" id="voice_2"
-                   value="voice_pucit_indic_urs_cg"> Voice 1 (Slow)
-        </label>
-    </div>
-    <div class="form-check form-check-inline">
-        <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="voice_option" id="voice_3"
-                   value="voice_pucit_indic_urm_cg"> Voice 2
-        </label>
-    </div>
+    {% for sound in sounds %}
+        <div class="form-check form-check-inline">
+            <label class="form-check-label">
+                <input class="form-check-input" type="radio" name="voice_option" id="voice_1"
+                       value="{{ sound }}" checked> {{ sounds|dict_value:sound }}
+            </label>
+        </div>
+    {% endfor %}
     <textarea id="urdu_text_area" rows="4" cols="50" placeholder="Enter some text and click play button"></textarea>
     <table>
         <tr>

@@ -1,4 +1,4 @@
-nlp/*.pyc
+*.pyc
 .idea
 nlp/db.sqlite3
 nlp/media

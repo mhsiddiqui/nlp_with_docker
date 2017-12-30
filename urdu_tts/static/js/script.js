@@ -19,7 +19,7 @@ $('#play_sound').click(function () {
         $('#loading-div').show();
         var settings = {
             "crossDomain": true,
-            "url": "/tts/generate/voice/",
+            "url": "/tts/generate/voice/html/",
             "method": "POST",
             "data": {
                 "text": urdu_text_area,
@@ -41,7 +41,7 @@ function play_evaluation_sound(sound_id) {
     $('#loading_img_' + sound_id).show();
     var settings = {
         "crossDomain": true,
-        "url": "/tts/generate/voice/",
+        "url": "/tts/generate/voice/html/",
         "method": "POST",
         "data": {
             "text": urdu_text_area,

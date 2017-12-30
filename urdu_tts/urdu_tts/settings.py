@@ -149,3 +149,9 @@ TTS_COMMAND = FESTIVALDIR + '/bin/text2wave -o {path}/tmp/output/{output_file} -
 LOGIN_URL = '/admin/login/'
 
 STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
+
+
+SOUND_OPTIONS = (
+    ('voice_pucit_indic_ur_cg', 'Speaker 1 (Fast)'),
+    ('voice_pucit_indic_urs_cg', 'Speaker 1 (Slow)'),
+)

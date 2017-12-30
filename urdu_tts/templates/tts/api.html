@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% block content %}
+    <div class="card">
+        <div class="card-block">
+            <h4 class="card-title">Generate Voice</h4>
+            <div class="card-text">
+                <h5>Description:</h5>
+                <p>
+                    Convert urdu text into voice.
+                </p>
+                <div style="margin-top: 20px">
+                    <div class="alert alert-success" role="alert">
+                        <strong>POST</strong> http://{{ host }}/tts/generate/voice/
+                    </div>
+                </div>
+
+                <div style="margin-top: 20px">
+                    <h5>Fields:</h5>
+                    <table class="table table-bordered">
+                        <thead>
+                        <tr>
+                            <th>Field Name</th>
+                            <th>Description</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr>
+                            <td>
+                                voice
+                            </td>
+                            <td>
+                                Voice Options
+                                <ul>
+                                    {% for sound in sounds %}
+                                        <li>{{ sound }}</li>
+                                    {% endfor %}
+                                </ul>
+                            </td>
+                        </tr>
+                        <tr>
+                            <td>
+                                text
+                            </td>
+                            <td>
+                                Text to Convert into Sound
+                            </td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="margin-top: 20px">
+                    <h5>Request Data:</h5>
+                    <p>
+                        <!-- HTML generated using hilite.me -->
+                    <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre
+                            style="margin: 0; line-height: 125%">{
+    <span style="color: #007700">&quot;text&quot;</span>: <span style="background-color: #fff0f0">&quot;سیکیورٹی فورسز نے 23 ہزار اسکولوں میں بنے ہوئے پولنگ اسٹیشنز کو سیل کردیا ہے&quot;</span>,
+    <span style="color: #007700">&quot;voice&quot;</span>: <span style="background-color: #fff0f0">&quot;voice_pucit_indic_ur_cg&quot;</span>
+}
+</pre>
+                    </div>
+
+                    </p>
+                </div>
+                <div style="margin-top: 20px">
+                    <h5>Response</h5>
+                    <p>
+                        <!-- HTML generated using hilite.me -->
+                    <div style="background: #ffffff; overflow:auto;width:auto;border:solid gray;border-width:.1em .1em .1em .8em;padding:.2em .6em;"><pre
+                            style="margin: 0; line-height: 125%">{
+    <span style="color: #007700">&quot;id&quot;</span>: <span style="color: #0000DD; font-weight: bold">76</span>,
+    <span style="color: #007700">&quot;file&quot;</span>: <span style="background-color: #fff0f0">&quot;http://{{ host }}/media/voice/127.0.0.1/201712301519490337030000/voice.wav&quot;</span>,
+    <span style="color: #007700">&quot;text&quot;</span>: <span style="background-color: #fff0f0">&quot;سیکیورٹی فورسز نے 23 ہزار اسکولوں میں بنے ہوئے پولنگ اسٹیشنز کو سیل کردیا ہے&quot;</span>,
+    <span style="color: #007700">&quot;time&quot;</span>: <span style="background-color: #fff0f0">&quot;2017-12-30T15:19:49.033703Z&quot;</span>,
+    <span style="color: #007700">&quot;ip&quot;</span>: <span
+                                style="background-color: #fff0f0">&quot;192.168.10.1&quot;</span>,
+    <span style="color: #007700">&quot;voice&quot;</span>: <span style="background-color: #fff0f0">&quot;voice_pucit_indic_ur_cg&quot;</span>
+}
+</pre>
+                    </div>
+
+                    </p>
+                </div>
+                <div style="margin-top: 20px">
+                    <h5>Content Type:</h5>
+                    <p>
+                        application/json
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}

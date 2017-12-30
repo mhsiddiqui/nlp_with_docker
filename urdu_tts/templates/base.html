@@ -43,32 +43,29 @@
             <li class="nav-item {% if navlink == 'main' %}active{% endif %}">
                 <a class="nav-link" href="/">Home</a>
             </li>
-{#            <li class="nav-item dropdown {% if navlink == 'project' %}active{% endif %}">#}
-{#                <a class="nav-link dropdown-toggle" href="http://example.com" id="navbarDropdownMenuLink"#}
-{#                   data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">#}
-{#                    Projects#}
-{#                </a>#}
-{#                <div class="dropdown-menu" aria-labelledby="navbarDropdownMenuLink">#}
-{#                    <a class="dropdown-item" href="{% url 'tts-page' %}">Urdu TTS</a>#}
-{#                </div>#}
-{#            </li>#}
-{#            <li class="nav-item {% if navlink == 'about' %}active{% endif %}">#}
-{#                <a class="nav-link" href="#">About Us</a>#}
-{#            </li>#}
-        </ul>
-        {% if not request.user.is_authenticated %}
-        <ul class="navbar-nav justify-content-end">
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/login/">Admin Login</a>
+            <li class="nav-item {% if navlink == 'demo' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'tts-demo' %}">Demo</a>
+            </li>
+            <li class="nav-item {% if navlink == 'download' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'tts-download' %}">Download</a>
+            </li>
+            <li class="nav-item {% if navlink == 'api' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'tts-api' %}">API</a>
             </li>
         </ul>
-        {% else %}
-            <ul class="navbar-nav justify-content-end">
-            <li class="nav-item">
-                <a class="nav-link" href="/admin/logout/">Logout</a>
-            </li>
-        </ul>
-        {% endif %}
+{#        {% if not request.user.is_authenticated %}#}
+{#        <ul class="navbar-nav justify-content-end">#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="/admin/login/">Admin Login</a>#}
+{#            </li>#}
+{#        </ul>#}
+{#        {% else %}#}
+{#            <ul class="navbar-nav justify-content-end">#}
+{#            <li class="nav-item">#}
+{#                <a class="nav-link" href="/admin/logout/">Logout</a>#}
+{#            </li>#}
+{#        </ul>#}
+{#        {% endif %}#}
     </div>
 </nav>
 <div class="container-fluid" style="margin-top: 10px">
