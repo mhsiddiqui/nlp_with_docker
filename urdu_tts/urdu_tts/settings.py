@@ -39,8 +39,15 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
-    'tts'
+    'tts',
+    'compressor'
 ]
+
+STATICFILES_FINDERS = (
+    'django.contrib.staticfiles.finders.FileSystemFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
+    'compressor.finders.CompressorFinder',
+)
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
@@ -50,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'urdu_tts.urls'
@@ -132,12 +140,17 @@ STATICFILES_DIRS = [
     os.path.join(BASE_DIR, "static"),
 ]
 
-STATIC_ROOT = os.path.join(BASE_DIR, "static_root")
+STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
+
+COMPRESS_ROOT = STATIC_ROOT
+
 STATIC_URL = '/static/'
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE', "django.contrib.staticfiles.storage.StaticFilesStorage")
 
 FESTIVALDIR = os.environ.get('FESTIVALDIR')
 if not FESTIVALDIR:
@@ -147,9 +160,6 @@ FESTIVAL = os.path.join(FESTIVALDIR, "bin", "festival")
 TTS_COMMAND = FESTIVALDIR + '/bin/text2wave -o {path}/tmp/output/{output_file} -eval "({voice})" {input_file}'
 
 LOGIN_URL = '/admin/login/'
-
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
 
 SOUND_OPTIONS = (
     ('voice_pucit_indic_ur_cg', 'Speaker 1 (Fast)'),

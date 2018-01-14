@@ -7,3 +7,4 @@ python-dateutil==2.6.1
 Fabric==1.14.0
 gunicorn==19.7.1
 whitenoise==3.3.0
+django_compressor==2.2

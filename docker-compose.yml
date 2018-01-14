@@ -27,6 +27,8 @@ services:
     container_name: tts-app
     environment:
       - DATABASE=db
+      - DEBUG=False
+      - STATICFILES_STORAGE=whitenoise.storage.CompressedManifestStaticFilesStorage
     depends_on:
       - db
     expose:
