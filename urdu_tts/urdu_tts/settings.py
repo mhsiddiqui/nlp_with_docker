@@ -25,7 +25,8 @@ project_home = BASE_DIR
 SECRET_KEY = 'y5_%9u88a6hop@q+pq!=0rqi3!(lyrz*9iosepktg0e=79iq@^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = os.environ.get('DEBUG', True)
+DEBUG = eval(os.environ.get('DEBUG', 'True'))
+
 
 ALLOWED_HOSTS = ['*']
 
@@ -94,10 +95,10 @@ else:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.postgresql_psycopg2',
-            'NAME': 'urdu_tts',
+            'NAME': os.environ.get('POSTGRES_DB'),
             'USER': os.environ.get('POSTGRES_USER'),
             'PASSWORD': os.environ.get('POSTGRES_PASSWORD'),
-            'HOST': os.environ.get('DATABASE'),
+            'HOST': os.environ.get('DATABASE', 'postgres'),
             'PORT': 5432,
         }
     }
@@ -142,18 +143,13 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = os.path.join(BASE_DIR, "staticfiles")
 
-COMPRESS_ROOT = STATIC_ROOT
-COMPRESS_ENABLED = not DEBUG
-
 STATIC_URL = '/static/'
-
-COMPRESS_URL = STATIC_URL
 
 MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE', "django.contrib.staticfiles.storage.StaticFilesStorage")
+# STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE', "django.contrib.staticfiles.storage.StaticFilesStorage")
 
 FESTIVALDIR = os.environ.get('FESTIVALDIR')
 if not FESTIVALDIR:
@@ -168,3 +164,7 @@ SOUND_OPTIONS = (
     ('voice_pucit_indic_ur_cg', 'Speaker 1 (Fast)'),
     ('voice_pucit_indic_urs_cg', 'Speaker 1 (Slow)'),
 )
+
+COMPRESS_ENABLED = not DEBUG
+COMPRESS_URL = STATIC_URL
+COMPRESS_ROOT = STATIC_ROOT

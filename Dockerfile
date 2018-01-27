@@ -88,4 +88,3 @@ COPY nginx /home/docker/code/
 RUN pip install -r requirements.txt
 
 ENV DJANGO_SETTINGS_MODULE='urdu_tts.settings'
-ENV DEBUG=False
