@@ -2,17 +2,11 @@
 {% load static %}
 {% load custom_filters %}
 {% block content %}
-    <div id="required-error" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
+    <div id="error" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
             <span aria-hidden="true">&times;</span>
         </button>
-        <strong>Error!</strong> Kindly add some text and click play button
-    </div>
-    <div id="alphabet-error" class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none">
-        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-        </button>
-        <strong>Error!</strong> No English Alphabet is allowed
+        <strong>Error!</strong> <span id="error-message"></span>
     </div>
     {% for sound in sounds %}
         <div class="form-check form-check-inline">

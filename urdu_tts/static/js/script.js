@@ -10,10 +10,12 @@ $('#play_sound').click(function () {
     var urdu_text_area = $('#urdu_text_area').val();
     $('.alert').hide();
     if (urdu_text_area == '') {
-        $('#required-error').show()
+        $('#error-message').empty().append('Kindly add some text and click play button');
+        $('#error-div').show();
     }
     else if (/[a-zA-Z]+/.test(urdu_text_area) == true) {
-        $('#alphabet-error').show()
+        $('#error-message').empty().append('No English Alphabet is allowed');
+        $('#error-div').show();
     }
     else {
         $('#loading-div').show();
@@ -27,10 +29,16 @@ $('#play_sound').click(function () {
             }
         };
 
-        $.ajax(settings).done(function (response) {
+        $.ajax(settings)
+        .done(function (response) {
             $('#output_div').empty().append(response);
             $('#loading-div').hide();
             $('#output_div').find('.generated_voice').get(0).play();
+        })
+        .fail(function (response) {
+            $('#loading-div').hide();
+            $('#error-message').empty().append('There was some error. Try by adding small text');
+            $('#error-div').show()
         });
     }
 });
