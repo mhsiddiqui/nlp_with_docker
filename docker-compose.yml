@@ -28,7 +28,6 @@ services:
     environment:
       - DATABASE=db
       - DEBUG=False
-      - STATICFILES_STORAGE=whitenoise.storage.CompressedManifestStaticFilesStorage
     depends_on:
       - db
     expose:
