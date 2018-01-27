@@ -34,5 +34,5 @@ services:
     expose:
       - "8888"
     entrypoint: ./entry_point.sh
-    command: gunicorn urdu_tts.wsgi:application -w 2 -b :8888
+    command: gunicorn urdu_tts.wsgi:application -w 2 -b :8888 --timeout 120 --graceful-timeout 120 --worker-class gevent
     restart: always
