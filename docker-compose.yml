@@ -27,7 +27,6 @@ services:
     container_name: tts-app
     environment:
       - DATABASE=db
-      - DEBUG=False
     depends_on:
       - db
     expose:
