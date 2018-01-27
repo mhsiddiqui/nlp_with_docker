@@ -11,11 +11,11 @@ $('#play_sound').click(function () {
     $('.alert').hide();
     if (urdu_text_area == '') {
         $('#error-message').empty().append('Kindly add some text and click play button');
-        $('#error-div').show();
+        $('#error').show();
     }
     else if (/[a-zA-Z]+/.test(urdu_text_area) == true) {
         $('#error-message').empty().append('No English Alphabet is allowed');
-        $('#error-div').show();
+        $('#error').show();
     }
     else {
         $('#loading-div').show();
@@ -38,7 +38,7 @@ $('#play_sound').click(function () {
         .fail(function (response) {
             $('#loading-div').hide();
             $('#error-message').empty().append('There was some error. Try by adding small text');
-            $('#error-div').show()
+            $('#error').show();
         });
     }
 });
