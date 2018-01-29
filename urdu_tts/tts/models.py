@@ -7,6 +7,13 @@ from django.db import models
 from django.dispatch import receiver
 
 
+VOICE_PROPERTIES = (
+    (1, 'Understandability'),
+    (2, 'Naturalness'),
+    (3, 'Overall')
+)
+
+
 def upload_file(instance, filename):
     timestamp = re.sub('[^A-Za-z0-9]+', '', str(instance.time))
     return 'voice/{ip}/{timestamp}/{filename}'.format(**{
@@ -30,16 +37,43 @@ class EvaluationData(models.Model):
         return self.text.encode('utf-8')
 
 
-class Evaluation(models.Model):
+class QuestionOption(models.Model):
+    text = models.CharField(max_length=200)
+    correct = models.BooleanField(default=False)
+
+
+class EvaluationQuestions(models.Model):
+    QUESTION_TYPE = (
+        (1, 'DRT/MRT'),
+        (2, 'MOS')
+    )
+    text = models.CharField(max_length=500)
+    type = models.IntegerField(choices=QUESTION_TYPE, default=1)
+    option = models.ManyToManyField(to=QuestionOption, related_name='question_options')
+
+
+class EvaluationRecord(models.Model):
+
+    name = models.CharField(max_length=500)
+    email = models.EmailField(max_length=500)
+    ip = models.CharField(default='', max_length=100)
+    timestamp = models.DateTimeField(auto_now_add=True)
+
+
+class EvaluationResult(models.Model):
     RATING = tuple((x, x) for x in range(1, 6))
 
-    data = models.ForeignKey(to=EvaluationData, related_name='evaluation_of_data')
+    record = models.ForeignKey(to=EvaluationRecord, related_name='evaluation_record')
+    question = models.ForeignKey(to=EvaluationQuestions, related_name='evaluation_question')
+
     understandability = models.IntegerField(default=1, choices=RATING)
     naturalness = models.IntegerField(default=1, choices=RATING)
-    pleasantness = models.IntegerField(default=1, choices=RATING)
     overall = models.IntegerField(default=1, choices=RATING)
-    voice = models.CharField(default='', max_length=200)
+
+    answer = models.ForeignKey(to=QuestionOption, blank=True, null=True)
+
     timestamp = models.DateTimeField(auto_now_add=True)
+
 
 
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)
