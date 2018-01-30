@@ -4,7 +4,7 @@ import uuid
 
 from ipware.ip import get_ip
 from rest_framework import serializers, response, status
-from tts.models import GeneratedVoice
+from tts.models import GeneratedVoice, EvaluationRecord, QuestionOption, EvaluationQuestion
 from tts.utils import UtilMethods
 from urdu_tts.settings import BASE_DIR, TTS_COMMAND, SOUND_OPTIONS
 from tts.text_processor.processor import get_processed_data
@@ -79,4 +79,24 @@ class GeneratedVoiceSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = GeneratedVoice
+        fields = '__all__'
+
+
+class EvaluationRecordSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = EvaluationRecord
+        fields = ('id', 'name', 'email')
+
+
+class QuestionOptionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = QuestionOption
+        fields = ('text',)
+
+
+class EvaluationQuestionSerializer(serializers.ModelSerializer):
+    option = QuestionOptionSerializer(read_only=True, many=True)
+
+    class Meta:
+        model = EvaluationQuestion
         fields = '__all__'

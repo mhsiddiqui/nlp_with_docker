@@ -11,8 +11,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, response, status, renderers
 
-from tts.models import GeneratedVoice, EvaluationData, Evaluation
-from tts.serializers import GeneratedVoiceSerializer, GenerateVoiceSerializer
+from tts.models import GeneratedVoice, QUESTION_TYPE, EvaluationQuestion
+from tts.serializers import GeneratedVoiceSerializer, GenerateVoiceSerializer, EvaluationRecordSerializer, \
+    EvaluationQuestionSerializer
 from tts.utils import UtilMethods
 from urdu_tts.settings import SOUND_OPTIONS
 from django.shortcuts import render
@@ -65,29 +66,33 @@ class GenerateVoiceHTML(GenerateVoiceJson):
     template_name = 'tts/voice_demo.html'
 
 
-class EvaluateVoice(View):
-
-    @method_decorator(csrf_exempt)
-    def dispatch(self, request, *args, **kwargs):
-        return super(EvaluateVoice, self).dispatch(request, *args, **kwargs)
-
-    def get(self, request, *args, **kwargs):
-        sentences = EvaluationData.objects.all()[:10]
-        data = {
-            'sentences': sentences,
-            'marks': range(1, 6),
-            'properties': ['Understandability', 'Naturalness', 'Pleasantness', 'Overall'],
-            'subtab': 'evaluate'
-        }
-        return render(request, template_name='tts/evaluation_form.html', context=data)
+class EvaluateVoice(generics.GenericAPIView):
+    serializer_class = EvaluationRecordSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
     def post(self, request, *args, **kwargs):
-        json_data = json.loads(request.POST.get('form'))
-        for feedback in json_data:
-            feedback.update({'data_id': feedback.get('data')})
-            feedback.pop('data', None)
-            Evaluation.objects.create(**feedback)
-        return HttpResponse("Thanks for evaluating.")
+        serializer = self.get_serializer(data=request.data)
+        if serializer.is_valid(raise_exception=True):
+            serializer.save()
+            return response.Response(data=serializer.data)
+        else:
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+
+
+class EvaluationQuestionsView(generics.GenericAPIView):
+    serializer_class = EvaluationQuestionSerializer
+    authentication_classes = ()
+    permission_classes = ()
+
+    def get(self, request, *args, **kwargs):
+        question_type = kwargs.get('type')
+        if int(question_type) not in dict(QUESTION_TYPE).keys():
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            questions = EvaluationQuestion.objects.filter(type=question_type).order_by('id')
+            serializer = self.get_serializer(questions, many=True)
+            return response.Response(data=serializer.data)
 
 
 class EvaluationResult(View):
@@ -103,17 +108,17 @@ class EvaluationResult(View):
 
     def get_evaluation_result_by_voice(self, voice):
         data = {}
-        result = EvaluationData.objects.filter(evaluation_of_data__voice=voice).annotate(
-            Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
-            Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
-        if result:
-            data.update({'result': result})
-        overall_avg = EvaluationData.objects.filter(evaluation_of_data__voice=voice).aggregate(
-            Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
-            Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
-        if overall_avg:
-            data.update({'overall_result': overall_avg})
-        data.update({'voice': voice, 'subtab': 'result'})
+        # result = EvaluationData.objects.filter(evaluation_of_data__voice=voice).annotate(
+        #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
+        #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
+        # if result:
+        #     data.update({'result': result})
+        # overall_avg = EvaluationData.objects.filter(evaluation_of_data__voice=voice).aggregate(
+        #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
+        #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
+        # if overall_avg:
+        #     data.update({'overall_result': overall_avg})
+        # data.update({'voice': voice, 'subtab': 'result'})
         return data
 
 
