@@ -48,6 +48,9 @@
             <li class="nav-item {% if navlink == 'demo' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'tts-demo' %}">Demo</a>
             </li>
+            <li class="nav-item {% if navlink == 'evaluate' %}active{% endif %}">
+                <a class="nav-link" href="{% url 'evaluate-page' %}">Evaluate</a>
+            </li>
             <li class="nav-item {% if navlink == 'download' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'tts-download' %}">Download</a>
             </li>

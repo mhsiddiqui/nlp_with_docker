@@ -30,16 +30,16 @@ $('#play_sound').click(function () {
         };
 
         $.ajax(settings)
-        .done(function (response) {
-            $('#output_div').empty().append(response);
-            $('#loading-div').hide();
-            $('#output_div').find('.generated_voice').get(0).play();
-        })
-        .fail(function (response) {
-            $('#loading-div').hide();
-            $('#error-message').empty().append('There was some error. Try by adding small text');
-            $('#error').show();
-        });
+            .done(function (response) {
+                $('#output_div').empty().append(response);
+                $('#loading-div').hide();
+                $('#output_div').find('.generated_voice').get(0).play();
+            })
+            .fail(function (response) {
+                $('#loading-div').hide();
+                $('#error-message').empty().append('There was some error. Try by adding small text');
+                $('#error').show();
+            });
     }
 });
 
@@ -109,4 +109,37 @@ function show_toast(msg) {
     setTimeout(function () {
         x.className = x.className.replace("show", "");
     }, 2000);
+}
+
+function submit_personal_info_section() {
+    var data = new FormData($('form')[0]);
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "/tts/evaluation/start/",
+        "method": "POST",
+        "processData": false,
+        "contentType": false,
+        "mimeType": "multipart/form-data",
+        "data": data
+    };
+    $.ajax(settings).done(function (response) {
+        $('#loading-div').hide();
+        show_toast(response);
+    }).fail(function (response) {
+        var json_response = JSON.parse(response.responseText);
+        for (var key in json_response) {
+            var error = json_response[key][0];
+            var error_div = $('#' + key + '-error');
+            error_div.empty().append(error);
+            error_div.show();
+        }
+        $('#loading-div').hide();
+    });
+}
+
+function next_section() {
+    $('.alert').hide();
+    $('#loading-div').show();
+    $('#save-form').click();
 }

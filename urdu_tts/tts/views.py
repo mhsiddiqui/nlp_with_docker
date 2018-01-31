@@ -2,7 +2,7 @@
 from __future__ import unicode_literals
 
 import json
-
+from collections import OrderedDict
 from django.contrib.auth.decorators import login_required
 from django.db.models import Avg
 from django.http import HttpResponse
@@ -11,7 +11,7 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, response, status, renderers
 
-from tts.models import GeneratedVoice, QUESTION_TYPE, EvaluationQuestion
+from tts.models import GeneratedVoice, QUESTION_TYPE, EvaluationQuestion, AGE
 from tts.serializers import GeneratedVoiceSerializer, GenerateVoiceSerializer, EvaluationRecordSerializer, \
     EvaluationQuestionSerializer
 from tts.utils import UtilMethods
@@ -93,6 +93,15 @@ class EvaluationQuestionsView(generics.GenericAPIView):
             questions = EvaluationQuestion.objects.filter(type=question_type).order_by('id')
             serializer = self.get_serializer(questions, many=True)
             return response.Response(data=serializer.data)
+
+
+class EvaluationPage(TemplateView):
+    template_name = 'tts/evaluation.html'
+
+    def get_context_data(self, **kwargs):
+        context = super(EvaluationPage, self).get_context_data(**kwargs)
+        context.update({'navlink': 'evaluate', 'age_range': OrderedDict(AGE), 'section': 'Personal Information'})
+        return context
 
 
 class EvaluationResult(View):

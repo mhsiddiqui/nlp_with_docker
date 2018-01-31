@@ -1,0 +1,58 @@
+{% extends 'base.html' %}{% load static %}{% load custom_filters %}
+{% block content %}
+    <div class="row">
+        <div class="col offset-lg-4 coffset-md-4 offset-sm-3 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+            <div id="evaluation-form-div">
+                <h1>{{ section }}</h1>
+                <form>
+                    <div class="form-group">
+                        <label for="name">Name</label>
+                        <input type="text" class="form-control" id="name" placeholder="Name" name="name">
+                        <div class="alert alert-danger alert-div" role="alert" id="name-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email address</label>
+                        <input type="email" class="form-control" id="email" name="email" aria-describedby="emailHelp"
+                               placeholder="Enter email">
+                        <div class="alert alert-danger alert-div" role="alert" id="email-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="gender">Gender</label>
+                        <select class="form-control form-control" name="gender">
+                            <option value="">---</option>
+                            <option value="1">Male</option>
+                            <option value="2">Female</option>
+                        </select>
+                        <div class="alert alert-danger alert-div" role="alert" id="gender-error"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="age">Age</label>
+                        <select class="form-control form-control" name="age">
+                            <option value="">---</option>
+                            {% for age in age_range %}
+                                <option value="{{ age }}">{{ age_range|dict_value:age }}</option>
+                            {% endfor %}
+                        </select>
+                        <div class="alert alert-danger alert-div" role="alert" id="age-error"></div>
+                    </div>
+                </form>
+                <button type="button" class="btn btn-primary" onclick="submit_personal_info_section()" style="display: none;" id="save-form">
+                    Save
+                </button>
+            </div>
+            <table>
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-primary" onclick="next_section()">Next</button>
+                    </td>
+                    <td>
+                        <div id="loading-div" style="display: none;">
+                            <img src="{% static "img/loader.gif" %}">
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+
+{% endblock %}

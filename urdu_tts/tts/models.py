@@ -17,6 +17,14 @@ QUESTION_TYPE = (
     (2, 'MOS')
 )
 
+AGE = (
+        ('1-15', '<15'),
+        ('15-25', '15-25'),
+        ('26-35', '26-35'),
+        ('36-45', '36-45'),
+        ('45+', '45+')
+    )
+
 
 def upload_file(instance, filename):
     timestamp = re.sub('[^A-Za-z0-9]+', '', str(instance.time))
@@ -57,8 +65,15 @@ class EvaluationRecord(models.Model):
         (3, 'Complete')
     )
 
+    GENDER = (
+        (1, 'Male'),
+        (2, 'Female')
+    )
+
     name = models.CharField(max_length=500)
     email = models.EmailField(max_length=500, default='no-email@email.com', blank=True, null=True)
+    gender = models.IntegerField(default=1, choices=GENDER)
+    age = models.CharField(max_length=20, default='15-25', choices=AGE)
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     mdrt = models.FloatField(default=0.0)

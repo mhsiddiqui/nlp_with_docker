@@ -83,9 +83,12 @@ class GeneratedVoiceSerializer(serializers.ModelSerializer):
 
 
 class EvaluationRecordSerializer(serializers.ModelSerializer):
+    gender = serializers.CharField(allow_null=False, required=True)
+    age = serializers.CharField(allow_null=False, required=True)
+
     class Meta:
         model = EvaluationRecord
-        fields = ('id', 'name', 'email')
+        fields = ('id', 'name', 'email', 'gender', 'age')
 
 
 class QuestionOptionSerializer(serializers.ModelSerializer):
