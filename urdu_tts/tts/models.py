@@ -7,14 +7,15 @@ from django.db import models
 from django.dispatch import receiver
 
 VOICE_PROPERTIES = (
-    (1, 'Understandability'),
-    (2, 'Naturalness'),
-    (3, 'Overall')
+    ('understandability', 'Understandability'),
+    ('naturalness', 'Naturalness'),
+    ('overall', 'Overall')
 )
 
 QUESTION_TYPE = (
-    (1, 'DRT/MRT'),
-    (2, 'MOS')
+    (1, 'DRT'),
+    (2, 'MRT'),
+    (3, 'MOS')
 )
 
 AGE = (
@@ -76,11 +77,14 @@ class EvaluationRecord(models.Model):
     age = models.CharField(max_length=20, default='15-25', choices=AGE)
     timestamp = models.DateTimeField(auto_now_add=True)
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
-    mdrt = models.FloatField(default=0.0)
-    mos = models.FloatField(default=0.0)
+    mrt = models.FloatField(default=0.0)
+    drt = models.FloatField(default=0.0)
+    understandability = models.FloatField(default=0.0)
+    naturalness = models.FloatField(default=0.0)
+    overall = models.FloatField(default=0.0)
 
     def __str__(self):
-        return '%s -- %s -- %s' % (self.name, self.email, self.ip)
+        return '%s -- %s' % (self.name, self.email)
 
 
 class EvaluationResult(models.Model):
@@ -89,9 +93,9 @@ class EvaluationResult(models.Model):
     record = models.ForeignKey(to=EvaluationRecord, related_name='evaluation_record')
     question = models.ForeignKey(to=EvaluationQuestion, related_name='evaluation_question')
 
-    understandability = models.IntegerField(default=1, choices=RATING)
-    naturalness = models.IntegerField(default=1, choices=RATING)
-    overall = models.IntegerField(default=1, choices=RATING)
+    understandability = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
+    naturalness = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
+    overall = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
 
     answer = models.ForeignKey(to=QuestionOption, blank=True, null=True)
     correct = models.BooleanField(default=False)

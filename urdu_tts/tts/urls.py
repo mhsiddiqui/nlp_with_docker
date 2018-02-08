@@ -1,7 +1,8 @@
 from django.conf.urls import url
 
 from tts.views import GenerateVoiceJson, GenerateVoiceHTML, TTSPage, DemoPage, \
-    EvaluateVoice, EvaluationResult, APIView, DownloadView, EvaluationQuestionsView, EvaluationPage
+    EvaluateVoice, EvaluationResult, APIView, DownloadView, EvaluationQuestionsView, EvaluationPage, \
+    EvaluationQuestionsViewHTML, EvaluationFormSubmit, test_view
 
 urlpatterns = [
     # url(r'^$', IndexPage.as_view()),
@@ -13,9 +14,12 @@ urlpatterns = [
     url(r'^generate/voice/html/$', GenerateVoiceHTML.as_view(), name='generate-tts-voice'),
     url(r'^evaluate/$', EvaluationPage.as_view(), name='evaluate-page'),
     url(r'^evaluation/start/$', EvaluateVoice.as_view(), name='evaluate-tts-voice'),
-    url(r'^evaluation/questions/(?P<type>[0-9a-zA-Z\-_]+)/$', EvaluationQuestionsView.as_view(),
-        name='evaluation_questions'),
-    url(r'^evaluation/result/$', EvaluationResult.as_view(), name='evaluation_result'),
-    url(r'^evaluation/result/(?P<voice>[0-9a-zA-Z\-_]+)/$',
-        EvaluationResult.as_view(), name='evaluation_result_by_voice'),
+    url(r'^evaluation/questions/$', EvaluationQuestionsView.as_view(), name='evaluation_questions'),
+    url(r'^evaluation/questions/html/$', EvaluationQuestionsViewHTML.as_view(), name='evaluation_questions_html'),
+    url(r'^evaluation/form/(?P<form>[0-9a-zA-Z\-_]+)/submit/$', EvaluationFormSubmit.as_view(),
+        name='evaluation_form'),
+    # url(r'^evaluation/result/$', EvaluationResult.as_view(), name='evaluation_result'),
+    # url(r'^evaluation/result/(?P<voice>[0-9a-zA-Z\-_]+)/$',
+    #     EvaluationResult.as_view(), name='evaluation_result_by_voice'),
+    url('^test/email/$', test_view)
 ]

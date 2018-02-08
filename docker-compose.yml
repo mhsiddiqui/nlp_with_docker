@@ -21,6 +21,12 @@ services:
     depends_on:
       - web
 
+  redis:
+    restart: always
+    image: redis:3.0
+    expose:
+      - "6379"
+
   web:
     # replace username/repo:tag with your name and image details
     build: .
@@ -32,6 +38,7 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
+      - CELERY_SERVER=redis
     depends_on:
       - db
     expose:
@@ -39,3 +46,20 @@ services:
     entrypoint: ./entry_point.sh
     command: gunicorn urdu_tts.wsgi:application -w 2 -b :8888 --timeout 120 --graceful-timeout 120 --worker-class gevent
     restart: always
+
+  celery:
+    build: .
+    image: tts-app
+    container_name: tts-celery
+    command: celery -A urdu_tts worker --loglevel=info
+    environment:
+      - DEBUG=False
+      - STATICFILES_STORAGE=whitenoise.storage.CompressedManifestStaticFilesStorage
+      - DATABASE=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=postgres
+      - CELERY_SERVER=redis
+    links:
+      - db
+      - redis

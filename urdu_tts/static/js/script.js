@@ -2,8 +2,12 @@
  * Created by mhassan on 8/30/17.
  */
 $(document).ready(function () {
-
+    $('.tooltip-div').tooltip();
 });
+
+function select_checkbox(event) {
+    $(event.target).find('input').prop('checked', 'checked');
+}
 
 $('#play_sound').click(function () {
 
@@ -83,7 +87,6 @@ function submit_evaluation_form() {
         };
         json_data.push(tmp);
     });
-    console.log(json_data);
     var settings = {
         "crossDomain": true,
         "url": "/tts/evaluate/voice/",
@@ -101,13 +104,9 @@ function submit_evaluation_form() {
 
 
 function show_toast(msg) {
-    // Get the snackbar DIV
-    var x = document.getElementById("snackbar");
-    x.innerHTML = msg;
-    x.className = "show";
-
     setTimeout(function () {
-        x.className = x.className.replace("show", "");
+        $('#snackbar').empty().html(msg);
+        $('#snackbar').show();
     }, 2000);
 }
 
@@ -124,8 +123,10 @@ function submit_personal_info_section() {
         "data": data
     };
     $.ajax(settings).done(function (response) {
-        $('#loading-div').hide();
-        show_toast(response);
+        show_hide_loading_icon('hide');
+        var json_response = JSON.parse(response);
+        localStorage.setItem('form', json_response.id);
+        evaluation_form_questions(json_response.next_url);
     }).fail(function (response) {
         var json_response = JSON.parse(response.responseText);
         for (var key in json_response) {
@@ -134,12 +135,187 @@ function submit_personal_info_section() {
             error_div.empty().append(error);
             error_div.show();
         }
-        $('#loading-div').hide();
+        show_hide_loading_icon('hide');
     });
 }
 
-function next_section() {
+function evaluation_form_questions(url) {
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": url,
+        "method": "GET"
+    };
+    $.ajax(settings).done(function (response) {
+        $('#evaluation-form-div').empty().append(response);
+        show_hide_loading_icon('hide');
+    }).fail(function (response) {
+        var json_response = JSON.parse(response.responseText);
+        for (var key in json_response) {
+            var error = json_response[key][0];
+            var error_div = $('#' + key + '-error');
+            error_div.empty().append(error);
+            error_div.show();
+        }
+        show_hide_loading_icon('hide');
+    });
+}
+
+function show_hide_loading_icon(action) {
+    var next = $('#next-icon');
+    var loading = $('#loading-icon');
+    if (action == 'show') {
+        next.hide();
+        loading.show();
+    }
+    else if (action == 'hide') {
+        next.show();
+        loading.hide();
+    }
+
+}
+
+function next_section(intro_r_questions_url) {
+    show_hide_loading_icon('show');
     $('.alert').hide();
-    $('#loading-div').show();
-    $('#save-form').click();
+    if (intro_r_questions_url == 'intro') {
+        localStorage.clear();
+        submit_personal_info_section();
+    }
+    else {
+        var form_valid = save_form_data();
+        if (form_valid) {
+            evaluation_form_questions(intro_r_questions_url);
+        }
+        else {
+            var form_error = $('#form-error');
+            form_error.empty().append('Fill Highlighted Sections');
+            form_error.show();
+        }
+    }
+}
+
+function save_form_data() {
+    var all_cards = $('.card');
+    var form_valid = check_all_question_are_answered(all_cards);
+    if (form_valid) {
+        var form_data = get_previously_saved_data();
+        for (var i = 0; i < all_cards.length; i++) {
+            var card = all_cards[i];
+            if ($(card).attr('data-type') == 1 || $(card).attr('data-type') == 2) {
+                form_data.push(get_mdrt_question_data(card));
+            }
+            else {
+                form_data.push(get_mos_question_data(card))
+            }
+        }
+        localStorage.setItem('form_data', JSON.stringify(form_data));
+        return true;
+    }
+    else {
+        return false;
+    }
+}
+
+function check_all_question_are_answered(questions) {
+    var form_valid = true;
+    for (var i = 0; i < questions.length; i++) {
+        var card = questions[i];
+        if ($(card).attr('data-type') == 1 || $(card).attr('data-type') == 2) {
+            if (!get_mdrt_question_data(card)) {
+                $(card).find('.card-header').addClass('red-bordered');
+                form_valid = false;
+            }
+        }
+        else {
+            if (!get_mos_question_data(card)) {
+                $(card).find('.card-header').addClass('red-bordered');
+                form_valid = false;
+            }
+        }
+    }
+    return form_valid;
+}
+
+function get_mdrt_question_data(question) {
+    var checked_checkbox = $(question).find('input:checked');
+    if (checked_checkbox.length == 0) {
+        return false;
+    }
+    else {
+        return {
+            'question': checked_checkbox.attr('name'),
+            'type': $(question).attr('data-type'),
+            'answer': checked_checkbox.val(),
+            'answers': []
+        };
+    }
+}
+
+function get_mos_question_data(question) {
+
+    var all_props = $(question).find('.form-table tr');
+    var data = {
+        'question': $(question).attr('data-id'),
+        'type': $(question).attr('data-type'),
+        'answer': ''
+    };
+    var tmp = [];
+    for (var i = 0; i < all_props.length; i++) {
+        var prop = all_props[i];
+        var checked_checkbox = $(prop).find('input:checked');
+        if (checked_checkbox.length == 0) {
+            return false;
+        }
+        else {
+            tmp.push({
+                'property': checked_checkbox.attr('data-property'),
+                'value': checked_checkbox.val()
+            });
+        }
+    }
+    data['answers'] = tmp;
+    return data;
+}
+
+function get_previously_saved_data() {
+    var form_data = localStorage.getItem('form_data');
+    if (form_data == undefined) {
+        form_data = []
+    }
+    else {
+        form_data = JSON.parse(form_data)
+    }
+    return form_data
+}
+
+function submit_final_form() {
+    var form_valid = save_form_data();
+    if (form_valid) {
+        save_from()
+    }
+    else {
+        var form_error = $('#form-error');
+        form_error.empty().append('Fill Highlighted Sections');
+        form_error.show();
+    }
+}
+
+function save_from() {
+    var settings = {
+        "async": true,
+        "crossDomain": true,
+        "url": "/tts/evaluation/form/" + localStorage.getItem("form") + "/submit/",
+        "method": "POST",
+        "headers": {
+            "Content-Type": "application/json"
+        },
+        "processData": false,
+        "data": localStorage.getItem('form_data')
+    };
+
+    $.ajax(settings).done(function (response) {
+        alert(response);
+    });
+
 }

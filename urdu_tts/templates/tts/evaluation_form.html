@@ -1,77 +1,86 @@
-{% extends 'tts/tts.html' %}
-{% load static %}
-{% block project_page %}
-    Select Voice:&nbsp;&nbsp;
-    <div class="form-check form-check-inline">
-        <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="voice_option" id="voice_1"
-                   value="voice_pucit_indic_ur_cg" checked> Voice 1 (Fast)
-        </label>
-    </div>
-    <div class="form-check form-check-inline">
-        <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="voice_option" id="voice_2"
-                   value="voice_pucit_indic_urs_cg"> Voice 1 (Slow)
-        </label>
-    </div>
-    <div class="form-check form-check-inline">
-        <label class="form-check-label">
-            <input class="form-check-input" type="radio" name="voice_option" id="voice_3"
-                   value="voice_pucit_indic_urm_cg"> Voice 2
-        </label>
-    </div>
-    <table class="table table-bordered">
-        <thead class="thead-inverse">
-        <tr>
-            <th width="700" style="text-align: center">Text</th>
-{#            <th width="150">Voice</th>#}
-            <th width="200" style="text-align: center">Play</th>
-            <th style="text-align: center">Evaluate</th>
-        </tr>
-        </thead>
-        {% for sentence in sentences %}
-            <tr class="voice_row" id="{{ sentence.id }}">
-                <td style="text-align: center">
-                    <div id="text_{{ sentence.id }}">{{ sentence.text }}</div>
-                </td>
-{#                <td>#}
-{#                    <label class="form-check-label">#}
-{#                        <input class="form-check-input" type="radio" name="{{ sentence.id }}_voice_option" id="{{ sentence.id }}_voice_1"#}
-{#                               value="voice_pucit_indic_ur_cg" checked> Voice 1 (Fast)#}
-{#                    </label><br/>#}
-{#                    <label class="form-check-label">#}
-{#                        <input class="form-check-input" type="radio" name="{{ sentence.id }}_voice_option" id="{{ sentence.id }}_voice_2"#}
-{#                               value="voice_pucit_indic_urs_cg"> Voice 1 (Slow)#}
-{#                    </label><br/>#}
-{#                    <label class="form-check-label">#}
-{#                        <input class="form-check-input" type="radio" name="{{ sentence.id }}_voice_option" id="{{ sentence.id }}_voice_3"#}
-{#                               value="voice_pucit_indic_urm_cg"> Voice 2#}
-{#                    </label>#}
-{#                </td>#}
-                <td style="text-align: center">
-                    <button class="btn btn-outline-primary btn-sm play-btn"
-                            id="play_sound_{{ sentence.id }}" type="button"
-                            onclick="play_evaluation_sound({{ sentence.id }})">
-                        <i class="fa fa-play" aria-hidden="true"></i>
-                        <img id="loading_img_{{ sentence.id }}" style="width: 20px; height: 20px; display: none;"
-                             src="{% static "img/loading_gif_small.gif" %}">
-                    </button>
-                    <div id="output_div_{{ sentence.id }}">
+{% load custom_filters %}
 
-                    </div>
-                </td>
-                <td style="text-align: center">
-                    <table border="0">
-                        {% for prop in properties %}
+<h1>Evaluation Form</h1>
+<div class="alert alert-danger alert-div" role="alert" id="form-error"></div>
+<form>
+    {% for question in results %}
+        {% if question.type == 1 or question.type == 2 %}
+            <div class="card custom-card" id="q{{ question.id }}" data-type="{{ question.type }}"
+                 data-id="{{ question.id }}">
+                <div class="card-header">
+                    <table style="width: 100%">
+                        <tr>
+                            <td><a id="text-{{ question.id }}" href="#q{{ question.id }}"
+                                   style="color: black;">{{ forloop.counter }}#</a></td>
+                            <td>
+                                <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="{{ question.type|question_help }}">
+                                    <i class="fa fa-question"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body" style="margin-top: 20px">
+                    <h5 class="card-title" style="margin-left: 20px">
+                        <span id="text-{{ question.id }}">{{ question.text }}</span>
+                    </h5>
+                    <p class="card-text">
+                    <ul class="list-group list-group-flush center-div" style="width: 94%;">
+                        {% for option in question.option %}
+                            <li class="list-group-item" onclick="select_checkbox(event)">
+                                <label class="form-check-label">
+                                    <input class="form-check-input" type="radio"
+                                           name="{{ question.id }}"
+                                           id="option_{{ option.id }}_{{ question.id }}"
+                                           value="{{ option.id }}">
+                                    {{ option.text }}
+                                </label>
+                            </li>
+                        {% endfor %}
+                    </ul>
+                    </p>
+                </div>
+            </div>
+        {% elif question.type == 3 %}
+            <div class="card custom-card" id="q{{ question.id }}" data-type="{{ question.type }}"
+                 data-id="{{ question.id }}">
+                <div class="card-header">
+                    <table style="width: 100%">
+                        <tr>
+                            <td><a id="text-{{ question.id }}" href="#q{{ question.id }}"
+                                   style="color: black;">{{ forloop.counter }}#</a></td>
+                            <td>
+                                <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
+                                        data-toggle="tooltip"
+                                        data-placement="top"
+                                        title="{{ question.type|question_help }}">
+                                    <i class="fa fa-question"></i>
+                                </button>
+                            </td>
+                        </tr>
+                    </table>
+                </div>
+                <div class="card-body" style="margin-top: 20px">
+                    <h5 class="card-title" style="margin-left: 20px">
+                        <span id="text-{{ question.id }}">{{ question.text }}</span>
+                    </h5>
+                    <p class="card-text">
+                    <table class="table table-bordered form-table center-div" style="width: 94%;">
+                        {% for property in question.option %}
                             <tr>
-                                <td>{{ prop }}</td>
-                                {% for i in marks %}
-                                    <td>
+                                <td>{{ property.name }}</td>
+                                {% for i in property.options %}
+                                    <td style="cursor: pointer" onclick="select_checkbox(event)">
                                         <div class="form-check form-check-inline">
                                             <label class="form-check-label">
                                                 <input class="form-check-input" type="radio"
-                                                       name="{{ prop|lower }}_{{ sentence.id }}" id="rate_{{ prop }}_{{ sentence.id }}_{{ i }}"
-                                                       value="{{ i }}" {% if i == 5 %}checked{% endif %}>
+                                                       data-property="{{ property.key }}"
+                                                       name="{{ property.key }}_{{ question.id }}"
+                                                       id="rate_{{ property.key }}_{{ question.id }}_{{ i }}"
+                                                       value="{{ i }}">
                                                 {{ i }}
                                             </label>
                                         </div>
@@ -80,20 +89,20 @@
                             </tr>
                         {% endfor %}
                     </table>
-                </td>
-            </tr>
-        {% endfor %}
-    </table>
-    <table>
-        <tr>
-            <td>
-                <button class="btn btn-outline-primary btn-lg play-btn" onclick="submit_evaluation_form()">Submit</button>
-            </td>
-            <td>
-                <div id="loading-div" style="display: none;">
-                    <img src="{% static "img/loader.gif" %}">
+                    </p>
                 </div>
-            </td>
-        </tr>
-    </table>
-{% endblock %}
+            </div>
+        {% endif %}
+    {% endfor %}
+</form>
+<div id="next_button">
+    {% if next %}
+        <button type="button" class="btn btn-primary pull-right" onclick="next_section('{{ next }}')" id="save-form">
+            Next <i class="fa fa-arrow-right"></i>
+        </button>
+    {% else %}
+        <button type="button" class="btn btn-primary pull-right" onclick="submit_final_form()" id="save-form">
+            Submit <i class="fa fa-send"></i>
+        </button>
+    {% endif %}
+</div>

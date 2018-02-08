@@ -10,3 +10,4 @@ gevent==1.2.2
 whitenoise==3.3.0
 django_compressor==2.2
 psycopg2==2.7.3.2
+celery[redis]==4.1.0

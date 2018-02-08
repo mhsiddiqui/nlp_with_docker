@@ -1,7 +1,7 @@
 {% extends 'base.html' %}{% load static %}{% load custom_filters %}
 {% block content %}
     <div class="row">
-        <div class="col offset-lg-4 coffset-md-4 offset-sm-3 col-lg-4 col-md-4 col-sm-6 col-xs-12">
+        <div class="col offset-lg-3 coffset-md-3 offset-sm-3 col-lg-6 col-md-6 col-sm-6 col-xs-12 form-section">
             <div id="evaluation-form-div">
                 <h1>{{ section }}</h1>
                 <form>
@@ -36,22 +36,13 @@
                         <div class="alert alert-danger alert-div" role="alert" id="age-error"></div>
                     </div>
                 </form>
-                <button type="button" class="btn btn-primary" onclick="submit_personal_info_section()" style="display: none;" id="save-form">
-                    Save
-                </button>
+                <div id="next_button">
+                    <button type="button" class="btn btn-primary pull-right" onclick="next_section('intro')">Next
+                        <span id="loading-icon" style="display: none"><i class="fa fa-spinner fa-spin"></i></span>
+                        <span id="next-icon"><i class="fa fa-arrow-right"></i></span>
+                    </button>
+                </div>
             </div>
-            <table>
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-primary" onclick="next_section()">Next</button>
-                    </td>
-                    <td>
-                        <div id="loading-div" style="display: none;">
-                            <img src="{% static "img/loader.gif" %}">
-                        </div>
-                    </td>
-                </tr>
-            </table>
         </div>
     </div>
 

@@ -41,7 +41,8 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'tts',
-    'compressor'
+    'compressor',
+    'celery'
 ]
 
 STATICFILES_FINDERS = (
@@ -168,3 +169,22 @@ SOUND_OPTIONS = (
 COMPRESS_ENABLED = not DEBUG
 COMPRESS_URL = STATIC_URL
 COMPRESS_ROOT = STATIC_ROOT
+
+REST_FRAMEWORK = {
+    'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
+    'PAGE_SIZE': 2
+}
+
+CELERY_BROKER_URL = 'redis://%s:6379/0' % os.environ.get('CELERY_SERVER', 'localhost')
+CELERY_RESULT_BACKEND = 'redis://%s:6379/0' % os.environ.get('CELERY_SERVER', 'localhost')
+CELERY_ACCEPT_CONTENT = ['application/json']
+CELERY_TASK_SERIALIZER = 'json'
+CELERY_RESULT_SERIALIZER = 'json'
+CELERY_TIMEZONE = TIME_ZONE
+
+
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_HOST_USER = 'info.ballogy@gmail.com'
+EMAIL_HOST_PASSWORD = 'ballogy17'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True

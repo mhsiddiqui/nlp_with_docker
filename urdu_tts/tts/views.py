@@ -11,9 +11,9 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from rest_framework import generics, response, status, renderers
 
-from tts.models import GeneratedVoice, QUESTION_TYPE, EvaluationQuestion, AGE
+from tts.models import GeneratedVoice, QUESTION_TYPE, EvaluationQuestion, AGE, EvaluationRecord, EvaluationResult
 from tts.serializers import GeneratedVoiceSerializer, GenerateVoiceSerializer, EvaluationRecordSerializer, \
-    EvaluationQuestionSerializer
+    EvaluationQuestionSerializer, EvaluationResultSerializer
 from tts.utils import UtilMethods
 from urdu_tts.settings import SOUND_OPTIONS
 from django.shortcuts import render
@@ -86,13 +86,32 @@ class EvaluationQuestionsView(generics.GenericAPIView):
     permission_classes = ()
 
     def get(self, request, *args, **kwargs):
-        question_type = kwargs.get('type')
-        if int(question_type) not in dict(QUESTION_TYPE).keys():
-            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+        questions = EvaluationQuestion.objects.all().order_by('id')
+        page_data = self.paginate_queryset(questions)
+        if page_data:
+            serializer = self.get_serializer(page_data, many=True)
+            return self.get_paginated_response(serializer.data)
         else:
-            questions = EvaluationQuestion.objects.filter(type=question_type).order_by('id')
-            serializer = self.get_serializer(questions, many=True)
-            return response.Response(data=serializer.data)
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+
+    def get_paginated_data(self, page):
+        question_type = 1
+        page_data = None
+        if not page:
+            question_type = 1
+        while question_type <= dict(QUESTION_TYPE).keys()[-1]:
+            questions = EvaluationQuestion.objects.all().order_by('id')
+            page_data = self.paginate_queryset(questions)
+            if not page_data:
+                question_type += 1
+            else:
+                break
+        return page_data, question_type
+
+
+class EvaluationQuestionsViewHTML(EvaluationQuestionsView):
+    renderer_classes = [renderers.TemplateHTMLRenderer]
+    template_name = 'tts/evaluation_form.html'
 
 
 class EvaluationPage(TemplateView):
@@ -104,31 +123,51 @@ class EvaluationPage(TemplateView):
         return context
 
 
-class EvaluationResult(View):
+class EvaluationFormSubmit(generics.GenericAPIView):
+    serializer_class = EvaluationResultSerializer
+    authentication_classes = ()
+    permission_classes = ()
 
-    @method_decorator(login_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(EvaluationResult, self).dispatch(request, *args, **kwargs)
+    def post(self, request, *args, **kwargs):
+        form = kwargs.get('form')
+        record = EvaluationRecord.objects.filter(id=form)
+        if record.exists():
+            EvaluationResult.objects.filter(record=record.first()).delete()
+            serializer = self.serializer_class(data=request.data, context={'record': record.first()}, many=True)
+            if serializer.is_valid():
+                serializer.save()
+                UtilMethods.add_task_in_queue('evaluation_form_post_processing', countdown=0, record=form)
+                return response.Response(status=status.HTTP_200_OK)
+            return response.Response(status=status.HTTP_404_NOT_FOUND)
+        else:
+            return response.Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get(self, request, *args, **kwargs):
-        voice = kwargs.get('voice', 'voice_pucit_indic_ur_cg')
-        data = self.get_evaluation_result_by_voice(voice)
-        return render(request, template_name='tts/evaluation_result.html', context=data)
 
-    def get_evaluation_result_by_voice(self, voice):
-        data = {}
-        # result = EvaluationData.objects.filter(evaluation_of_data__voice=voice).annotate(
-        #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
-        #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
-        # if result:
-        #     data.update({'result': result})
-        # overall_avg = EvaluationData.objects.filter(evaluation_of_data__voice=voice).aggregate(
-        #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
-        #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
-        # if overall_avg:
-        #     data.update({'overall_result': overall_avg})
-        # data.update({'voice': voice, 'subtab': 'result'})
-        return data
+# class EvaluationResult(View):
+#
+#     @method_decorator(login_required)
+#     def dispatch(self, request, *args, **kwargs):
+#         return super(EvaluationResult, self).dispatch(request, *args, **kwargs)
+#
+#     def get(self, request, *args, **kwargs):
+#         voice = kwargs.get('voice', 'voice_pucit_indic_ur_cg')
+#         data = self.get_evaluation_result_by_voice(voice)
+#         return render(request, template_name='tts/evaluation_result.html', context=data)
+#
+#     def get_evaluation_result_by_voice(self, voice):
+#         data = {}
+#         # result = EvaluationData.objects.filter(evaluation_of_data__voice=voice).annotate(
+#         #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
+#         #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
+#         # if result:
+#         #     data.update({'result': result})
+#         # overall_avg = EvaluationData.objects.filter(evaluation_of_data__voice=voice).aggregate(
+#         #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
+#         #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
+#         # if overall_avg:
+#         #     data.update({'overall_result': overall_avg})
+#         # data.update({'voice': voice, 'subtab': 'result'})
+#         return data
 
 
 class APIView(TemplateView):
@@ -147,3 +186,8 @@ class DownloadView(TemplateView):
         context = super(DownloadView, self).get_context_data(**kwargs)
         context.update({'navlink': 'download'})
         return context
+
+
+def test_view(request):
+    UtilMethods.add_task_in_queue('send_test_mail', countdown=0)
+    return HttpResponse('Sent')

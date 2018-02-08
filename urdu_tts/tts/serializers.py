@@ -2,9 +2,11 @@ import os
 import re
 import uuid
 
+from django.urls import reverse
 from ipware.ip import get_ip
 from rest_framework import serializers, response, status
-from tts.models import GeneratedVoice, EvaluationRecord, QuestionOption, EvaluationQuestion
+from tts.models import GeneratedVoice, EvaluationRecord, QuestionOption, EvaluationQuestion, VOICE_PROPERTIES, \
+    EvaluationResult
 from tts.utils import UtilMethods
 from urdu_tts.settings import BASE_DIR, TTS_COMMAND, SOUND_OPTIONS
 from tts.text_processor.processor import get_processed_data
@@ -85,21 +87,83 @@ class GeneratedVoiceSerializer(serializers.ModelSerializer):
 class EvaluationRecordSerializer(serializers.ModelSerializer):
     gender = serializers.CharField(allow_null=False, required=True)
     age = serializers.CharField(allow_null=False, required=True)
+    next_url = serializers.SerializerMethodField(read_only=True)
+
+    def get_next_url(self, instance):
+        return reverse('evaluation_questions_html')
 
     class Meta:
         model = EvaluationRecord
-        fields = ('id', 'name', 'email', 'gender', 'age')
+        fields = ('id', 'name', 'email', 'gender', 'age', 'next_url')
 
 
 class QuestionOptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = QuestionOption
-        fields = ('text',)
+        fields = ('id', 'text',)
 
 
 class EvaluationQuestionSerializer(serializers.ModelSerializer):
-    option = QuestionOptionSerializer(read_only=True, many=True)
+    option = serializers.SerializerMethodField(read_only=True)
+
+    def get_option(self, instance):
+        if instance.type in [1, 2]:
+            return QuestionOptionSerializer(instance.option.all(), many=True).data
+        else:
+            final_response = []
+            for key, value in dict(VOICE_PROPERTIES).items():
+                tmp = {
+                    'key': key,
+                    'name': value,
+                    'options': range(1, 6)
+                }
+                final_response.append(tmp)
+            return final_response
 
     class Meta:
         model = EvaluationQuestion
         fields = '__all__'
+
+
+class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
+    def create(self, validated_data):
+        record = self.context.get('record')
+        form_data = []
+        for question in validated_data:
+            tmp = {
+                'record': record,
+                'question': question.get('question'),
+                'understandability': self.get_property_rating('understandability', question),
+                'naturalness': self.get_property_rating('naturalness', question),
+                'overall': self.get_property_rating('overall', question),
+                'answer_id': question.get('answer')
+            }
+            form_data.append(EvaluationResult(**tmp))
+        return EvaluationResult.objects.bulk_create(form_data)
+
+    def get_property_rating(self, prp, question):
+        if int(question.get('type')) == 3:
+            req_prop = None
+            for prop in question.get('answers'):
+                if prop.get('property') == prp:
+                    req_prop = prop.get('value')
+                    break
+            return req_prop
+        else:
+            return None
+
+
+class PropertySerializer(serializers.Serializer):
+    property = serializers.CharField(max_length=100, allow_null=True, allow_blank=True)
+    value = serializers.CharField(max_length=100, allow_null=True, allow_blank=True)
+
+
+class EvaluationResultSerializer(serializers.ModelSerializer):
+    answers = PropertySerializer(many=True)
+    answer = serializers.CharField(allow_null=True, allow_blank=True)
+    type = serializers.CharField(allow_null=True, allow_blank=True)
+
+    class Meta:
+        model = EvaluationResult
+        list_serializer_class = EvaluationResultBulkCreateSerializer
+        fields = ('question', 'answer', 'answers', 'type')

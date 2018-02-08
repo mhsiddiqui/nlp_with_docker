@@ -102,3 +102,33 @@ However, delay the fade out process for 2.5 seconds */
 .alert-div {
     display: none;
 }
+
+.custom-card {
+    margin-top: 20px;
+    margin-bottom: 10px;
+}
+
+.form-section {
+    background-color: #c1e6fc38;
+    box-shadow: 5px 10px #88888842;
+}
+
+#next_button {
+    width: 100%;
+    margin: 20px auto 100px auto;
+}
+
+.list-group-item:hover {
+    font-weight: bold;
+    background-color: #f7f7f9;
+    cursor: pointer;
+}
+
+.center-div {
+    margin-left: auto;
+    margin-right: auto;
+}
+
+.red-bordered {
+    border: 1px solid red;
+}
