@@ -25,7 +25,7 @@ project_home = BASE_DIR
 SECRET_KEY = 'y5_%9u88a6hop@q+pq!=0rqi3!(lyrz*9iosepktg0e=79iq@^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = eval(os.environ.get('DEBUG', 'True'))
+DEBUG = eval(os.environ.get('DEBUG', 'False'))
 
 
 ALLOWED_HOSTS = ['*']
@@ -59,7 +59,6 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'urdu_tts.urls'
@@ -169,6 +168,7 @@ SOUND_OPTIONS = (
 COMPRESS_ENABLED = not DEBUG
 COMPRESS_URL = STATIC_URL
 COMPRESS_ROOT = STATIC_ROOT
+COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',

@@ -23,6 +23,7 @@ services:
 
   redis:
     restart: always
+    container_name: tts-redis
     image: redis:3.0
     expose:
       - "6379"
@@ -30,10 +31,10 @@ services:
   web:
     # replace username/repo:tag with your name and image details
     build: .
+    image: tts-image
     container_name: tts-app
     environment:
       - DEBUG=False
-      - STATICFILES_STORAGE=whitenoise.storage.CompressedManifestStaticFilesStorage
       - DATABASE=db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
@@ -48,19 +49,18 @@ services:
     restart: always
 
   celery:
-    build: .
-    image: tts-app
+    image: tts-image
     container_name: tts-celery
     command: celery -A urdu_tts worker --loglevel=info
+    depends_on:
+      - web
+    links:
+      - db
+      - redis
     environment:
       - DEBUG=False
-      - STATICFILES_STORAGE=whitenoise.storage.CompressedManifestStaticFilesStorage
       - DATABASE=db
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
       - CELERY_SERVER=redis
-    entrypoint: ./entry_point.sh
-    links:
-      - db
-      - redis
