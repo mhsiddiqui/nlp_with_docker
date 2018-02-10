@@ -25,7 +25,7 @@ project_home = BASE_DIR
 SECRET_KEY = 'y5_%9u88a6hop@q+pq!=0rqi3!(lyrz*9iosepktg0e=79iq@^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = eval(os.environ.get('DEBUG', 'False'))
+DEBUG = eval(os.environ.get('DEBUG', 'True'))
 
 
 ALLOWED_HOSTS = ['*']
@@ -41,14 +41,12 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'tts',
-    'compressor',
     'celery'
 ]
 
 STATICFILES_FINDERS = (
     'django.contrib.staticfiles.finders.FileSystemFinder',
-    'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-    'compressor.finders.CompressorFinder',
+    'django.contrib.staticfiles.finders.AppDirectoriesFinder'
 )
 
 MIDDLEWARE = [
@@ -59,6 +57,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'urdu_tts.urls'
@@ -149,7 +148,7 @@ MEDIA_URL = '/media/'
 
 MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 
-# STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE', "django.contrib.staticfiles.storage.StaticFilesStorage")
+STATICFILES_STORAGE = os.environ.get('STATICFILES_STORAGE', "django.contrib.staticfiles.storage.StaticFilesStorage")
 
 FESTIVALDIR = os.environ.get('FESTIVALDIR')
 if not FESTIVALDIR:
@@ -164,11 +163,6 @@ SOUND_OPTIONS = (
     ('voice_pucit_indic_ur_cg', 'Speaker 1 (Fast)'),
     ('voice_pucit_indic_urs_cg', 'Speaker 1 (Slow)'),
 )
-
-COMPRESS_ENABLED = not DEBUG
-COMPRESS_URL = STATIC_URL
-COMPRESS_ROOT = STATIC_ROOT
-COMPRESS_STORAGE = 'compressor.storage.GzipCompressorFileStorage'
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'rest_framework.pagination.PageNumberPagination',
