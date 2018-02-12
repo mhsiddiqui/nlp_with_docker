@@ -1,7 +1,8 @@
 {% load custom_filters %}
-
+{% load static %}
 <h1>Evaluation Form</h1>
 <div class="alert alert-danger alert-div" role="alert" id="form-error"></div>
+<div id="output_div"></div>
 <form>
     {% for question in results %}
         {% if question.type == 1 or question.type == 2 %}
@@ -10,9 +11,15 @@
                 <div class="card-header">
                     <table style="width: 100%">
                         <tr>
-                            <td><a id="text-{{ question.id }}" href="#q{{ question.id }}"
-                                   style="color: black;">{{ forloop.counter }}#</a></td>
-                            <td>
+                            <td style="width: 33%">
+                                <a id="text-{{ question.id }}" href="#q{{ question.id }}"
+                                   style="color: black;">{{ forloop.counter }}#</a>
+                            </td>
+                            <td style="width: 33%; text-align: center">
+                                <span id="loading-icon-{{ question.id }}" style="display: none"><i
+                                        class="fa fa-spinner fa-spin"></i></span>
+                            </td>
+                            <td style="width: 33%">
                                 <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -25,7 +32,12 @@
                 </div>
                 <div class="card-body" style="margin-top: 20px">
                     <h5 class="card-title" style="margin-left: 20px">
-                        <span id="text-{{ question.id }}">{{ question.text }}</span>
+                        <span id="text-{{ question.id }}">
+                            <button class="btn btn-outline-primary"
+                                    onclick="play_sound({{ question.id }}, '{{ question.text }}', 1)" type="button">
+                                <i class="fa fa-play"></i>
+                            </button>
+                        </span>
                     </h5>
                     <p class="card-text">
                     <ul class="list-group list-group-flush center-div" style="width: 94%;">
@@ -50,9 +62,15 @@
                 <div class="card-header">
                     <table style="width: 100%">
                         <tr>
-                            <td><a id="text-{{ question.id }}" href="#q{{ question.id }}"
-                                   style="color: black;">{{ forloop.counter }}#</a></td>
-                            <td>
+                            <td style="width: 33%">
+                                <a id="text-{{ question.id }}" href="#q{{ question.id }}"
+                                   style="color: black;">{{ forloop.counter }}#</a>
+                            </td>
+                            <td style="width: 33%; text-align: center">
+                                <span id="loading-icon-{{ question.id }}" style="display: none"><i
+                                        class="fa fa-spinner fa-spin"></i></span>
+                            </td>
+                            <td style="width: 33%">
                                 <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
                                         data-toggle="tooltip"
                                         data-placement="top"
@@ -65,7 +83,19 @@
                 </div>
                 <div class="card-body" style="margin-top: 20px">
                     <h5 class="card-title" style="margin-left: 20px">
-                        <span id="text-{{ question.id }}">{{ question.text }}</span>
+                        <span id="text-{{ question.id }}">
+                            <table width="100%">
+                                <tr>
+                                    <td style="width: 90%">{{ question.text }}</td>
+                                    <td style="width: 10%">
+                                        <button class="btn btn-outline-primary"
+                                                                   onclick="play_sound({{ question.id }}, '{{ question.text }}', 1)"
+                                                                   type="button"><i class="fa fa-play"></i>
+                                        </button>
+                                    </td>
+                                </tr>
+                            </table>
+                        </span>
                     </h5>
                     <p class="card-text">
                     <table class="table table-bordered form-table center-div" style="width: 94%;">

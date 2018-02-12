@@ -319,3 +319,28 @@ function save_from() {
     });
 
 }
+
+function play_sound(id, text, no_of_times) {
+    $('#loading-icon-' + id).show();
+    var settings = {
+        "crossDomain": true,
+        "url": "/tts/generate/voice/html/",
+        "method": "POST",
+        "data": {
+            "text": text,
+            "voice": 'voice_pucit_indic_urs_cg'
+        }
+    };
+
+    $.ajax(settings)
+        .done(function (response) {
+            $('#output_div').empty().append(response);
+            $('#loading-icon-' + id).hide();
+            $('#output_div').find('.generated_voice').get(0).play();
+        })
+        .fail(function (response) {
+            $('#loading-icon-' + id).hide();
+            alert('There is some error');
+        });
+
+}

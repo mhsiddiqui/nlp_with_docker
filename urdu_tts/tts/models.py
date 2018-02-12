@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
 import re
@@ -46,8 +45,16 @@ class QuestionOption(models.Model):
     text = models.CharField(max_length=200)
     correct = models.BooleanField(default=False)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.text = self.text.encode('utf-8', 'ignore').decode('utf-8')
+        return super(QuestionOption, self).save(force_insert, force_update, using, update_fields)
+
     def __str__(self):
-        return self.text.encode('utf-8')
+        return self.text.encode('utf-8', 'ignore').decode('utf-8')
+
+    def __unicode__(self):
+        return self.text.encode('utf-8', 'ignore').decode('utf-8')
 
 
 class EvaluationQuestion(models.Model):
@@ -55,8 +62,16 @@ class EvaluationQuestion(models.Model):
     type = models.IntegerField(choices=QUESTION_TYPE, default=1)
     option = models.ManyToManyField(to=QuestionOption, related_name='question_options', blank=True)
 
+    def save(self, force_insert=False, force_update=False, using=None,
+             update_fields=None):
+        self.text = self.text.encode('utf-8', 'ignore').decode('utf-8')
+        return super(EvaluationQuestion, self).save(force_insert, force_update, using, update_fields)
+
     def __str__(self):
-        return '%s -- %s' % (self.text.encode('utf-8'), dict(QUESTION_TYPE).get(self.type))
+        return '%s -- %s' % (self.text.encode('utf-8', 'ignore').decode('utf-8'), dict(QUESTION_TYPE).get(self.type))
+
+    def __unicode__(self):
+        return '%s -- %s' % (self.text.encode('utf-8', 'ignore').decode('utf-8'), dict(QUESTION_TYPE).get(self.type))
 
 
 class EvaluationRecord(models.Model):
