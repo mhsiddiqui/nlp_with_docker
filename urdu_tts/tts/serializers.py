@@ -133,7 +133,7 @@ class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
             tmp = {
                 'record': record,
                 'question': question.get('question'),
-                'understandability': self.get_property_rating('understandability', question),
+                'intelligibility': self.get_property_rating('intelligibility', question),
                 'naturalness': self.get_property_rating('naturalness', question),
                 'overall': self.get_property_rating('overall', question),
                 'answer_id': question.get('answer')
