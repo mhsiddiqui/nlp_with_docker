@@ -6,7 +6,7 @@ from django.db import models
 from django.dispatch import receiver
 
 VOICE_PROPERTIES = (
-    ('understandability', 'Understandability'),
+    ('intelligibility', 'Intelligibility'),
     ('naturalness', 'Naturalness'),
     ('overall', 'Overall')
 )
@@ -108,7 +108,7 @@ class EvaluationResult(models.Model):
     record = models.ForeignKey(to=EvaluationRecord, related_name='evaluation_record')
     question = models.ForeignKey(to=EvaluationQuestion, related_name='evaluation_question')
 
-    understandability = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
+    intelligibility = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
     naturalness = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
     overall = models.IntegerField(default=1, choices=RATING, null=True, blank=True)
 

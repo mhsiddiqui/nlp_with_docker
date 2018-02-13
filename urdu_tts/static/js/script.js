@@ -127,6 +127,7 @@ function submit_personal_info_section() {
         var json_response = JSON.parse(response);
         localStorage.setItem('form', json_response.id);
         evaluation_form_questions(json_response.next_url);
+        $('#instruction').show();
     }).fail(function (response) {
         var json_response = JSON.parse(response.responseText);
         for (var key in json_response) {
@@ -337,6 +338,9 @@ function play_sound(id, text, no_of_times) {
             $('#output_div').empty().append(response);
             $('#loading-icon-' + id).hide();
             $('#output_div').find('.generated_voice').get(0).play();
+            if (no_of_times == 1){
+                $('#play_' + id).addClass('disabled');
+            }
         })
         .fail(function (response) {
             $('#loading-icon-' + id).hide();

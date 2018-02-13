@@ -18,3 +18,15 @@ def question_help(question_type):
     }
 
     return section_heading_n_instructions.get(question_type)
+
+
+@register.filter(name='section_name')
+def get_section_name(questions):
+    fq = questions[0]
+    q_type = fq.get('type')
+    section = {
+        1: 'Diagnostic Rhyme Test (DRT)',
+        2: 'Modified Diagnostic Rhyme Test (MRT)',
+        3: 'Mean Opinion Score (MOS)'
+    }
+    return section.get(q_type)

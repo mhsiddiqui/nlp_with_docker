@@ -1,6 +1,6 @@
 {% load custom_filters %}
 {% load static %}
-<h1>Evaluation Form</h1>
+<h1>{{ results|section_name }}</h1>
 <div class="alert alert-danger alert-div" role="alert" id="form-error"></div>
 <div id="output_div"></div>
 <form>
@@ -33,7 +33,7 @@
                 <div class="card-body" style="margin-top: 20px">
                     <h5 class="card-title" style="margin-left: 20px">
                         <span id="text-{{ question.id }}">
-                            <button class="btn btn-outline-primary"
+                            <button class="btn btn-outline-primary" id="play_{{ question.id }}"
                                     onclick="play_sound({{ question.id }}, '{{ question.text }}', 1)" type="button">
                                 <i class="fa fa-play"></i>
                             </button>
@@ -89,7 +89,7 @@
                                     <td style="width: 90%">{{ question.text }}</td>
                                     <td style="width: 10%">
                                         <button class="btn btn-outline-primary"
-                                                                   onclick="play_sound({{ question.id }}, '{{ question.text }}', 1)"
+                                                                   onclick="play_sound({{ question.id }}, '{{ question.text }}', 0)"
                                                                    type="button"><i class="fa fa-play"></i>
                                         </button>
                                     </td>
