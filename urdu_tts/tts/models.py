@@ -94,7 +94,7 @@ class EvaluationRecord(models.Model):
     status = models.IntegerField(choices=STATUS_CHOICES, default=1)
     mrt = models.FloatField(default=0.0)
     drt = models.FloatField(default=0.0)
-    understandability = models.FloatField(default=0.0)
+    intelligibility = models.FloatField(default=0.0)
     naturalness = models.FloatField(default=0.0)
     overall = models.FloatField(default=0.0)
 

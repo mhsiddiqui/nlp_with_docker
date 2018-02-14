@@ -1,7 +1,7 @@
 from django.conf.urls import url
 
 from tts.views import GenerateVoiceJson, GenerateVoiceHTML, TTSPage, DemoPage, \
-    EvaluateVoice, EvaluationResult, APIView, DownloadView, EvaluationQuestionsView, EvaluationPage, \
+    EvaluateVoice, EvaluationResultView, APIView, DownloadView, EvaluationQuestionsView, EvaluationPage, \
     EvaluationQuestionsViewHTML, EvaluationFormSubmit, test_view
 
 urlpatterns = [
@@ -18,7 +18,7 @@ urlpatterns = [
     url(r'^evaluation/questions/html/$', EvaluationQuestionsViewHTML.as_view(), name='evaluation_questions_html'),
     url(r'^evaluation/form/(?P<form>[0-9a-zA-Z\-_]+)/submit/$', EvaluationFormSubmit.as_view(),
         name='evaluation_form'),
-    # url(r'^evaluation/result/$', EvaluationResult.as_view(), name='evaluation_result'),
+    url(r'^evaluation/result/$', EvaluationResultView.as_view(), name='evaluation_result'),
     # url(r'^evaluation/result/(?P<voice>[0-9a-zA-Z\-_]+)/$',
     #     EvaluationResult.as_view(), name='evaluation_result_by_voice'),
     url('^test/email/$', test_view)

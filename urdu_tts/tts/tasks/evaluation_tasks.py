@@ -16,7 +16,7 @@ def evaluation_form_post_processing(*args, **kwargs):
                 result.correct = True
                 result.save()
     mos_result = results.aggregate(
-        understandability=Avg('understandability'),
+        intelligibility=Avg('intelligibility'),
         naturalness=Avg('naturalness'),
         overall=Avg('overall')
     )

@@ -4,8 +4,9 @@ from __future__ import unicode_literals
 import json
 from collections import OrderedDict
 from django.contrib.auth.decorators import login_required
-from django.db.models import Avg
+from django.db.models import Avg, Count
 from django.http import HttpResponse
+from django.views.generic import ListView
 from ipware.ip import get_ip
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -143,31 +144,30 @@ class EvaluationFormSubmit(generics.GenericAPIView):
             return response.Response(status=status.HTTP_404_NOT_FOUND)
 
 
-# class EvaluationResult(View):
-#
-#     @method_decorator(login_required)
-#     def dispatch(self, request, *args, **kwargs):
-#         return super(EvaluationResult, self).dispatch(request, *args, **kwargs)
-#
-#     def get(self, request, *args, **kwargs):
-#         voice = kwargs.get('voice', 'voice_pucit_indic_ur_cg')
-#         data = self.get_evaluation_result_by_voice(voice)
-#         return render(request, template_name='tts/evaluation_result.html', context=data)
-#
-#     def get_evaluation_result_by_voice(self, voice):
-#         data = {}
-#         # result = EvaluationData.objects.filter(evaluation_of_data__voice=voice).annotate(
-#         #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
-#         #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
-#         # if result:
-#         #     data.update({'result': result})
-#         # overall_avg = EvaluationData.objects.filter(evaluation_of_data__voice=voice).aggregate(
-#         #     Avg('evaluation_of_data__understandability'), Avg('evaluation_of_data__naturalness'),
-#         #     Avg('evaluation_of_data__pleasantness'), Avg('evaluation_of_data__overall'))
-#         # if overall_avg:
-#         #     data.update({'overall_result': overall_avg})
-#         # data.update({'voice': voice, 'subtab': 'result'})
-#         return data
+class EvaluationResultView(ListView):
+    paginate_by = 10
+    template_name = 'tts/evaluation_result.html'
+
+    @method_decorator(login_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(EvaluationResultView, self).dispatch(request, *args, **kwargs)
+
+    def get_queryset(self):
+        return EvaluationRecord.objects.filter(status=3).order_by('-timestamp')
+
+    def get_context_data(self, **kwargs):
+        context = super(EvaluationResultView, self).get_context_data(**kwargs)
+        overall = EvaluationRecord.objects.filter(status=3).aggregate(
+            mrt_avg=Avg('mrt'),
+            drt_avg=Avg('drt'),
+            intelligibility_avg=Avg('intelligibility'),
+            naturalness_avg=Avg('naturalness'),
+            overall_avg=Avg('overall'),
+            total=Count('pk')
+        )
+        context.update({'overall': overall})
+        context.update({'navlink': 'evaluation_result'})
+        return context
 
 
 class APIView(TemplateView):
