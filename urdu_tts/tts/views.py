@@ -87,7 +87,7 @@ class EvaluationQuestionsView(generics.GenericAPIView):
     permission_classes = ()
 
     def get(self, request, *args, **kwargs):
-        questions = EvaluationQuestion.objects.all().order_by('id')
+        questions = EvaluationQuestion.objects.all().order_by('type', 'id')
         page_data = self.paginate_queryset(questions)
         if page_data:
             serializer = self.get_serializer(page_data, many=True)
