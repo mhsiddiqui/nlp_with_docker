@@ -27,6 +27,7 @@ def create_dummy_data():
 
 
 def create_super_user():
+    print 'creating new user'
     if not User.objects.filter(username='admin').exists():
         user = User.objects.create(
             username='admin',
