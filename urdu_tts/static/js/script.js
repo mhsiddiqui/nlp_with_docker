@@ -151,14 +151,23 @@ function evaluation_form_questions(url) {
         $('#evaluation-form-div').empty().append(response);
         show_hide_loading_icon('hide');
     }).fail(function (response) {
-        var json_response = JSON.parse(response.responseText);
-        for (var key in json_response) {
-            var error = json_response[key][0];
-            var error_div = $('#' + key + '-error');
-            error_div.empty().append(error);
-            error_div.show();
+        if (response.status == 404){
+            var nfe = $('#not_found_error');
+            nfe.empty().append(response.responseText);
+            nfe.show();
+            $('#instruction').hide();
+            $('#save-form').hide();
         }
-        show_hide_loading_icon('hide');
+        else {
+            var json_response = JSON.parse(response.responseText);
+            for (var key in json_response) {
+                var error = json_response[key][0];
+                var error_div = $('#' + key + '-error');
+                error_div.empty().append(error);
+                error_div.show();
+            }
+            show_hide_loading_icon('hide');
+        }
     });
 }
 

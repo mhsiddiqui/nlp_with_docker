@@ -1,138 +1,143 @@
 {% load custom_filters %}
 {% load static %}
-<h1>{{ results|section_name }}</h1>
-<div class="alert alert-danger alert-div" role="alert" id="form-error"></div>
-<div id="output_div"></div>
-<form>
-    {% for question in results %}
-        {% if question.type == 1 or question.type == 2 %}
-            <div class="card custom-card" id="q{{ question.id }}" data-type="{{ question.type }}"
-                 data-id="{{ question.id }}">
-                <div class="card-header">
-                    <table style="width: 100%">
-                        <tr>
-                            <td style="width: 33%">
-                                <a id="text-{{ question.id }}" href="#q{{ question.id }}"
-                                   style="color: black;">{{ forloop.counter }}#</a>
-                            </td>
-                            <td style="width: 33%; text-align: center">
+{% if status == 404 %}
+    <h1>No Question Found</h1>
+{% else %}
+    <h1>{{ results|section_name }}</h1>
+    <div class="alert alert-danger alert-div" role="alert" id="form-error"></div>
+    <div id="output_div"></div>
+    <form>
+        {% for question in results %}
+            {% if question.type == 1 or question.type == 2 %}
+                <div class="card custom-card" id="q{{ question.id }}" data-type="{{ question.type }}"
+                     data-id="{{ question.id }}">
+                    <div class="card-header">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 33%">
+                                    <a id="text-{{ question.id }}" href="#q{{ question.id }}"
+                                       style="color: black;">{{ forloop.counter }}#</a>
+                                </td>
+                                <td style="width: 33%; text-align: center">
                                 <span id="loading-icon-{{ question.id }}" style="display: none"><i
                                         class="fa fa-spinner fa-spin"></i></span>
-                            </td>
-                            <td style="width: 33%">
-                                <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="{{ question.type|question_help }}">
-                                    <i class="fa fa-question"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="card-body" style="margin-top: 20px">
-                    <h5 class="card-title" style="margin-left: 20px">
+                                </td>
+                                <td style="width: 33%">
+                                    <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ question.type|question_help }}">
+                                        <i class="fa fa-question"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card-body" style="margin-top: 20px">
+                        <h5 class="card-title" style="margin-left: 20px">
                         <span id="text-{{ question.id }}">
                             <button class="btn btn-outline-primary" id="play_{{ question.id }}"
                                     onclick="play_sound({{ question.id }}, '{{ question.text }}', 1)" type="button">
                                 <i class="fa fa-play"></i>
                             </button>
                         </span>
-                    </h5>
-                    <p class="card-text">
-                    <ul class="list-group list-group-flush center-div" style="width: 94%;">
-                        {% for option in question.option %}
-                            <li class="list-group-item" onclick="select_checkbox(event)">
-                                <label class="form-check-label">
-                                    <input class="form-check-input" type="radio"
-                                           name="{{ question.id }}"
-                                           id="option_{{ option.id }}_{{ question.id }}"
-                                           value="{{ option.id }}">
-                                    {{ option.text }}
-                                </label>
-                            </li>
-                        {% endfor %}
-                    </ul>
-                    </p>
+                        </h5>
+                        <p class="card-text">
+                        <ul class="list-group list-group-flush center-div" style="width: 94%;">
+                            {% for option in question.option %}
+                                <li class="list-group-item" onclick="select_checkbox(event)">
+                                    <label class="form-check-label">
+                                        <input class="form-check-input" type="radio"
+                                               name="{{ question.id }}"
+                                               id="option_{{ option.id }}_{{ question.id }}"
+                                               value="{{ option.id }}">
+                                        {{ option.text }}
+                                    </label>
+                                </li>
+                            {% endfor %}
+                        </ul>
+                        </p>
+                    </div>
                 </div>
-            </div>
-        {% elif question.type == 3 %}
-            <div class="card custom-card" id="q{{ question.id }}" data-type="{{ question.type }}"
-                 data-id="{{ question.id }}">
-                <div class="card-header">
-                    <table style="width: 100%">
-                        <tr>
-                            <td style="width: 33%">
-                                <a id="text-{{ question.id }}" href="#q{{ question.id }}"
-                                   style="color: black;">{{ forloop.counter }}#</a>
-                            </td>
-                            <td style="width: 33%; text-align: center">
+            {% elif question.type == 3 %}
+                <div class="card custom-card" id="q{{ question.id }}" data-type="{{ question.type }}"
+                     data-id="{{ question.id }}">
+                    <div class="card-header">
+                        <table style="width: 100%">
+                            <tr>
+                                <td style="width: 33%">
+                                    <a id="text-{{ question.id }}" href="#q{{ question.id }}"
+                                       style="color: black;">{{ forloop.counter }}#</a>
+                                </td>
+                                <td style="width: 33%; text-align: center">
                                 <span id="loading-icon-{{ question.id }}" style="display: none"><i
                                         class="fa fa-spinner fa-spin"></i></span>
-                            </td>
-                            <td style="width: 33%">
-                                <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
-                                        data-toggle="tooltip"
-                                        data-placement="top"
-                                        title="{{ question.type|question_help }}">
-                                    <i class="fa fa-question"></i>
-                                </button>
-                            </td>
-                        </tr>
-                    </table>
-                </div>
-                <div class="card-body" style="margin-top: 20px">
-                    <h5 class="card-title" style="margin-left: 20px">
+                                </td>
+                                <td style="width: 33%">
+                                    <button href="#" type="button" class="btn btn-link tooltip-div pull-right"
+                                            data-toggle="tooltip"
+                                            data-placement="top"
+                                            title="{{ question.type|question_help }}">
+                                        <i class="fa fa-question"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="card-body" style="margin-top: 20px">
+                        <h5 class="card-title" style="margin-left: 20px">
                         <span id="text-{{ question.id }}">
                             <table width="100%">
                                 <tr>
                                     <td style="width: 90%">{{ question.text }}</td>
                                     <td style="width: 10%">
                                         <button class="btn btn-outline-primary"
-                                                                   onclick="play_sound({{ question.id }}, '{{ question.text }}', 0)"
-                                                                   type="button"><i class="fa fa-play"></i>
+                                                onclick="play_sound({{ question.id }}, '{{ question.text }}', 0)"
+                                                type="button"><i class="fa fa-play"></i>
                                         </button>
                                     </td>
                                 </tr>
                             </table>
                         </span>
-                    </h5>
-                    <p class="card-text">
-                    <table class="table table-bordered form-table center-div" style="width: 94%;">
-                        {% for property in question.option %}
-                            <tr>
-                                <td>{{ property.name }}</td>
-                                {% for i in property.options %}
-                                    <td style="cursor: pointer" onclick="select_checkbox(event)">
-                                        <div class="form-check form-check-inline">
-                                            <label class="form-check-label">
-                                                <input class="form-check-input" type="radio"
-                                                       data-property="{{ property.key }}"
-                                                       name="{{ property.key }}_{{ question.id }}"
-                                                       id="rate_{{ property.key }}_{{ question.id }}_{{ i }}"
-                                                       value="{{ i }}">
-                                                {{ i }}
-                                            </label>
-                                        </div>
-                                    </td>
-                                {% endfor %}
-                            </tr>
-                        {% endfor %}
-                    </table>
-                    </p>
+                        </h5>
+                        <p class="card-text">
+                        <table class="table table-bordered form-table center-div" style="width: 94%;">
+                            {% for property in question.option %}
+                                <tr>
+                                    <td>{{ property.name }}</td>
+                                    {% for i in property.options %}
+                                        <td style="cursor: pointer" onclick="select_checkbox(event)">
+                                            <div class="form-check form-check-inline">
+                                                <label class="form-check-label">
+                                                    <input class="form-check-input" type="radio"
+                                                           data-property="{{ property.key }}"
+                                                           name="{{ property.key }}_{{ question.id }}"
+                                                           id="rate_{{ property.key }}_{{ question.id }}_{{ i }}"
+                                                           value="{{ i }}">
+                                                    {{ i }}
+                                                </label>
+                                            </div>
+                                        </td>
+                                    {% endfor %}
+                                </tr>
+                            {% endfor %}
+                        </table>
+                        </p>
+                    </div>
                 </div>
-            </div>
+            {% endif %}
+        {% endfor %}
+    </form>
+    <div id="next_button">
+        {% if next %}
+            <button type="button" class="btn btn-primary pull-right" onclick="next_section('{{ next }}')"
+                    id="save-form">
+                Next <i class="fa fa-arrow-right"></i>
+            </button>
+        {% else %}
+            <button type="button" class="btn btn-primary pull-right" onclick="submit_final_form()" id="save-form">
+                Submit <i class="fa fa-send"></i>
+            </button>
         {% endif %}
-    {% endfor %}
-</form>
-<div id="next_button">
-    {% if next %}
-        <button type="button" class="btn btn-primary pull-right" onclick="next_section('{{ next }}')" id="save-form">
-            Next <i class="fa fa-arrow-right"></i>
-        </button>
-    {% else %}
-        <button type="button" class="btn btn-primary pull-right" onclick="submit_final_form()" id="save-form">
-            Submit <i class="fa fa-send"></i>
-        </button>
-    {% endif %}
-</div>
+    </div>
+{% endif %}

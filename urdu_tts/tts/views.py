@@ -93,7 +93,7 @@ class EvaluationQuestionsView(generics.GenericAPIView):
             serializer = self.get_serializer(page_data, many=True)
             return self.get_paginated_response(serializer.data)
         else:
-            return response.Response(status=status.HTTP_400_BAD_REQUEST)
+            return response.Response(status=status.HTTP_404_NOT_FOUND)
 
     def get_paginated_data(self, page):
         question_type = 1
