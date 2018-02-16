@@ -2,5 +2,5 @@
 kill -KILL $(lsof -t -i tcp:5432)
 python manage.py collectstatic --noinput
 python manage.py migrate
-python script.py
+#python script.py
 exec "$@"
