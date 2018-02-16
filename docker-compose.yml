@@ -1,5 +1,8 @@
 version: "3"
 services:
+  volumes:
+    media: {}
+
   db:
     restart: always
     container_name: tts-db
@@ -48,6 +51,8 @@ services:
     entrypoint: ./entry_point.sh
     command: gunicorn urdu_tts.wsgi:application -w 2 -b :8888 --timeout 120 --graceful-timeout 120 --worker-class gevent
     restart: always
+    volumes:
+    - media:/home/docker/code/media
 
   celery:
     image: tts-image
