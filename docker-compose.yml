@@ -71,5 +71,5 @@ services:
     volumes:
       - data-volume:/home/docker/code/media
 
-  volumes:
-     data-volume:
+volumes:
+   data-volume:
