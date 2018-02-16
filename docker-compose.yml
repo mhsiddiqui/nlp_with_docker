@@ -1,8 +1,5 @@
 version: "3"
 services:
-  volumes:
-    media: {}
-
   db:
     restart: always
     container_name: tts-db
@@ -71,3 +68,5 @@ services:
       - POSTGRES_PASSWORD=postgres
       - POSTGRES_DB=postgres
       - CELERY_SERVER=redis
+    volumes:
+    - media:/home/docker/code/media
