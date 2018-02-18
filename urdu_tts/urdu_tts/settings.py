@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/1.11/ref/settings/
 import os
 
 # Build paths inside the project like this: os.path.join(BASE_DIR, ...)
+
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 
 # Quick-start development settings - unsuitable for production
@@ -41,7 +42,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'tts',
-    'celery'
+    'celery',
+    # 'storages',
+    # 'django_ftpserver'
 ]
 
 STATICFILES_FINDERS = (
@@ -179,6 +182,6 @@ CELERY_TIMEZONE = TIME_ZONE
 
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_HOST_USER = 'info.ballogy@gmail.com'
-EMAIL_HOST_PASSWORD = 'ballogy17'
+EMAIL_HOST_PASSWORD = 'ballogy2k18'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True

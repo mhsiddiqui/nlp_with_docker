@@ -4,6 +4,9 @@ import re
 
 from django.db import models
 from django.dispatch import receiver
+from storages.backends.ftp import FTPStorage
+
+# fs = FTPStorage()
 
 VOICE_PROPERTIES = (
     ('intelligibility', 'Intelligibility'),
