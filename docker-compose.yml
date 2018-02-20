@@ -1,4 +1,9 @@
 version: "3"
+
+volumes:
+    static:
+    media: {}
+
 services:
   db:
     restart: always
@@ -18,9 +23,8 @@ services:
       - "8000:8000"
     volumes:
       - ./nginx/site-enabled:/etc/nginx/conf.d
-      - /home/docker/code/
-      - /home/docker/code/static
-      - /home/docker/code/media
+      - static:/home/docker/code/staticfiles
+      - media:/home/docker/code/media
     depends_on:
       - web
 
@@ -52,9 +56,9 @@ services:
     command: gunicorn urdu_tts.wsgi:application -w 2 -b :8888 --timeout 120 --graceful-timeout 120 --worker-class gevent
     restart: always
     volumes:
-      - /home/docker/code/
-      - /home/docker/code/static
-      - /home/docker/code/media
+      - ./urdu_tts:/home/docker/code/
+      - static:/home/docker/code/staticfiles
+      - media:/home/docker/code/media
 
   celery:
     image: tts-image
@@ -74,6 +78,6 @@ services:
       - POSTGRES_DB=postgres
       - CELERY_SERVER=redis
     volumes:
-      - /home/docker/code/
-      - /home/docker/code/static
-      - /home/docker/code/media
+      - ./urdu_tts:/home/docker/code/
+      - static:/home/docker/code/staticfiles
+      - media:/home/docker/code/media

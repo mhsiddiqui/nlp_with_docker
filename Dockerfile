@@ -85,6 +85,11 @@ WORKDIR /home/docker/code/
 COPY urdu_tts/ /home/docker/code/
 COPY nginx /home/docker/code/
 
+RUN adduser --no-create-home --disabled-login --group --system django
+RUN chown -R django:django /home/docker/code/
+
+VOLUME /home/docker/code/media
+
 RUN pip install -r requirements.txt
 
 ENV DJANGO_SETTINGS_MODULE='urdu_tts.settings'
