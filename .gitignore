@@ -2,7 +2,6 @@
 .idea
 urdu_tts/*.pyc
 urdu_tts/db.sqlite3
-urdu_tts/media
 urdu_tts/tmp/input/*
 urdu_tts/tmp/output/*
 urdu_tts/staticfiles
