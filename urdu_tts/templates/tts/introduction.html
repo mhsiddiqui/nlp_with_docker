@@ -1,4 +1,34 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}{% load static %}
 {% block content %}
-    {% lorem 5 %}
+    <h2>
+        Introduction
+    </h2>
+    <p>
+        Language is mode of expressing one’s feeling and thoughts with the help of sound and expressions. Human convert
+        their thought into speech in order to communicate with each other. Urdu is national language of Pakistan and it
+        is spoken by more than 100 million people across the world. A Text-to-Speech (TTS) synthesis will be very
+        helping for visually impaired, handicapped and illiterate people. The TTS Synthesis is the process which takes
+        raw text as input and converts it into speech signals. It works by concatenation of small segments of recorded
+        speech called phonemes. These are the symbols which collectively describe correct pronunciation of a word. This
+        process is easy as compared to previous one as number of such phonemes is limited for any language. For English,
+        there are 44 such phonemes. Similarly in Urdu, there are 44 consonants, 8 long vowels, 7 long nasal vowels, 3
+        short vowels and many diphthongs.
+        The TTS system comprises of two main stages. One is called Natural language Processing (NLP) and other is called
+        Speech Synthesis (SS). This is shown in below block diagram.
+        <img src="{% static 'img/block.png' %}">
+    </p>
+
+    <p>
+        In NLP unit, text is first converted into string of letters and then word boundaries are marked by tokenizer.
+        This is called normalization of text. Normalized data is then converted into phonetic strings with the help of
+        letter to sound rules after which Syllabifier marks syllable boundaries. Sound change rules are applied on the
+        syllabified date. Language modeling techniques are also applied for finding context in which a specific word is
+        used. As human has tendency to recognize basic rules for his native language, it is easy to judge context of a
+        word in a sentence and what should be correct pronunciation of that word with respect to its context. For
+        example, it can be guessed easily that “پل” in a sentence is used for پل (moment) or پل (bridge) for any native
+        speaker of Urdu. Last stage of NLP is stress intonation marker which adds stress and intonation to the text.
+        Speech Synthesis unit converts symbolic information received from NLP unit into audible speech with the help of
+        different Digital Signal Processing Techniques. The quality of speech synthesis system is detected by
+        naturalness and intelligibility of the speech..
+    </p>
 {% endblock %}
