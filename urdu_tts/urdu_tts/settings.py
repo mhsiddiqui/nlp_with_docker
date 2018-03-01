@@ -26,9 +26,8 @@ project_home = BASE_DIR
 SECRET_KEY = 'y5_%9u88a6hop@q+pq!=0rqi3!(lyrz*9iosepktg0e=79iq@^'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DUMMY_DEBUG = eval(os.environ.get('DEBUG', 'True'))
-# DEBUG = eval(os.environ.get('DEBUG', 'True'))
-DEBUG = True
+DEBUG = eval(os.environ.get('DEBUG', 'True'))
+# DEBUG = True
 
 
 ALLOWED_HOSTS = ['*']
@@ -62,7 +61,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
-    'whitenoise.middleware.WhiteNoiseMiddleware'
+    # 'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
 ROOT_URLCONF = 'urdu_tts.urls'
@@ -88,7 +87,7 @@ WSGI_APPLICATION = 'urdu_tts.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/1.11/ref/settings/#databases
-if DUMMY_DEBUG:
+if DEBUG:
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
