@@ -12,6 +12,7 @@ class EvaluationQuestionAdmin(admin.ModelAdmin):
 
 
 admin.site.register(EvaluationQuestion, EvaluationQuestionAdmin)
+admin.site.register(QuestionOption)
 admin.site.register(GeneratedVoice)
 admin.site.register(EvaluationRecord)
 admin.site.register(EvaluationResult)
