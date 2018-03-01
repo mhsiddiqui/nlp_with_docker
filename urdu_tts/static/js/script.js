@@ -347,9 +347,9 @@ function play_sound(id, text, no_of_times) {
             $('#output_div').empty().append(response);
             $('#loading-icon-' + id).hide();
             $('#output_div').find('.generated_voice').get(0).play();
-            if (no_of_times == 1){
-                $('#play_' + id).addClass('disabled');
-            }
+            // if (no_of_times == 1){
+            //     $('#play_' + id).addClass('disabled');
+            // }
         })
         .fail(function (response) {
             $('#loading-icon-' + id).hide();
