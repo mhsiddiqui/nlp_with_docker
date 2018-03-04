@@ -50,13 +50,20 @@ class GenerateVoiceJson(generics.GenericAPIView):
 
     def post(self, request, *args, **kwargs):
         UtilMethods.create_temp_directories_if_does_not_exist()
-        self.delete_old_generated_voice()
-        serialized = self.get_serializer(data=request.data)
-        if serialized.is_valid(raise_exception=True):
-            generated_obj = serialized.save()
-            serialized_gen_obj = GeneratedVoiceSerializer(generated_obj, context={'request': request})
+        voice = request.data.get('voice')
+        text = request.data.get('text')
+        gvoice = GeneratedVoice.objects.filter(text=text, voice=voice)
+        if gvoice.exists():
+            serialized_gen_obj = GeneratedVoiceSerializer(gvoice.first(), context={'request': request})
             return response.Response(data=serialized_gen_obj.data)
-        return response.Response(status=status.HTTP_400_BAD_REQUEST)
+        else:
+            self.delete_old_generated_voice()
+            serialized = self.get_serializer(data=request.data)
+            if serialized.is_valid(raise_exception=True):
+                generated_obj = serialized.save()
+                serialized_gen_obj = GeneratedVoiceSerializer(generated_obj, context={'request': request})
+                return response.Response(data=serialized_gen_obj.data)
+            return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete_old_generated_voice(self):
         GeneratedVoice.objects.filter(ip=get_ip(self.request)).delete()
