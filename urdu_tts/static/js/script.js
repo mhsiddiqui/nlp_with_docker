@@ -213,10 +213,17 @@ function save_form_data() {
         for (var i = 0; i < all_cards.length; i++) {
             var card = all_cards[i];
             if ($(card).attr('data-type') == 1 || $(card).attr('data-type') == 2) {
-                form_data.push(get_mdrt_question_data(card));
+                var card_data = get_mdrt_question_data(card);
+                if ($.inArray(card_data, form_data) == -1){
+                    form_data.push(card_data);
+                }
+
             }
             else {
-                form_data.push(get_mos_question_data(card))
+                var card_data = get_mos_question_data(card);
+                if ($.inArray(card_data, form_data) == -1){
+                    form_data.push(get_mos_question_data(card))
+                }
             }
         }
         localStorage.setItem('form_data', JSON.stringify(form_data));
