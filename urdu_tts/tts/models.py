@@ -122,7 +122,7 @@ class EvaluationResult(models.Model):
 
     def __str__(self):
         return '%s-%s-%s-%s' % (
-            self.pk, self.question.pk, self.answer.pk, self.correct)
+            self.id, self.question.id, self.answer.id, self.correct)
 
 
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)
