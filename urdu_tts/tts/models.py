@@ -122,8 +122,7 @@ class EvaluationResult(models.Model):
 
     def __str__(self):
         return '%s-%s-%s-%s' % (
-            self.pk, self.question.text.encode('utf-8', 'ignore').decode('utf-8'),
-            self.answer.text.encode('utf-8', 'ignore').decode('utf-8'), self.correct)
+            self.pk, self.question.pk, self.answer.pk, self.correct)
 
 
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)
