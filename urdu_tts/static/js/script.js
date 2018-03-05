@@ -325,7 +325,7 @@ function save_from() {
     };
 
     $.ajax(settings).done(function (response) {
-        alert(response);
+        show_alert('Thank You', 'Thank you for evaluating', 'redirect_to_main_page');
     });
 
 }
@@ -356,4 +356,19 @@ function play_sound(id, text, no_of_times) {
             alert('There is some error');
         });
 
+}
+
+
+function show_alert(heading, body, close_action) {
+    $('#model-heading').empty().text(heading);
+    $('#model-content').empty().text(body);
+    var model = $('#alert-model');
+    model.modal('show');
+    model.on('hidden.bs.modal', function () {
+        window[close_action]();
+    });
+}
+
+function redirect_to_main_page() {
+    location.href = '/tts/evaluate/';
 }
