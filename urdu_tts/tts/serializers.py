@@ -138,7 +138,8 @@ class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
                 'overall': self.get_property_rating('overall', question),
                 'answer_id': question.get('answer')
             }
-            form_data.append(EvaluationResult(**tmp))
+            if EvaluationResult(**tmp) not in form_data:
+                form_data.append(EvaluationResult(**tmp))
         return EvaluationResult.objects.bulk_create(form_data)
 
     def get_property_rating(self, prp, question):
