@@ -120,10 +120,6 @@ class EvaluationResult(models.Model):
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
-    def __str__(self):
-        return '%s-%s-%s-%s' % (
-            self.id, self.question.id, self.answer.id, self.correct)
-
 
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)
 def remove_media_from_storage(sender, instance, **kwargs):
