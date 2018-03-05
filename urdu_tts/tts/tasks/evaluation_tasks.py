@@ -45,6 +45,8 @@ def evaluation_form_post_processing(*args, **kwargs):
         'mrt': float(mrt_result.get('mrt'))/float(drt_result.get('total'))
     }
     record_obj.update(**mdrt)
+    record_obj.update(status=3)
+
 
 @app.task
 def send_test_mail(*args, **kwargs):
