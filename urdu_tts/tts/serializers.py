@@ -85,12 +85,25 @@ class GeneratedVoiceSerializer(serializers.ModelSerializer):
 
 
 class EvaluationRecordSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(allow_null=False, required=True)
     gender = serializers.CharField(allow_null=False, required=True)
     age = serializers.CharField(allow_null=False, required=True)
     next_url = serializers.SerializerMethodField(read_only=True)
 
     def get_next_url(self, instance):
         return reverse('evaluation_questions_html')
+
+    def create(self, validated_data):
+        record = EvaluationRecord.objects.filter(
+            name__iexact=validated_data.get('name'),
+            email__iexact=validated_data.get('email'),
+            status=1)
+        if record.exists():
+            record.update(**validated_data)
+            record = record.first()
+        else:
+            record = super(EvaluationRecordSerializer, self).create(validated_data)
+        return record
 
     class Meta:
         model = EvaluationRecord
