@@ -53,9 +53,9 @@
                 <a class="nav-link" href="{% url 'tts-download' %}">Download</a>
             </li>
             {% if request.user.is_authenticated %}
-            <li class="nav-item {% if navlink == 'evaluation_result' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'evaluation_result' %}">Evaluation Result</a>
-            </li>
+                <li class="nav-item {% if navlink == 'evaluation_result' %}active{% endif %}">
+                    <a class="nav-link" href="{% url 'evaluation_result' %}">Evaluation Result</a>
+                </li>
             {% endif %}
             <li class="nav-item {% if navlink == 'api' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'tts-api' %}">API</a>
@@ -83,6 +83,24 @@
 <!-- Footer -->
 <div class="alert alert-danger" role="alert" id="snackbar"></div>
 <div class="footer"></div>
+
+
+<div class="modal fade" id="alert-model">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title" id="model-heading"></h4>
+                <button type="button" class="close" data-dismiss="modal">&times;</button>
+            </div>
+            <div class="modal-body" id="model-content">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-danger" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!-- Scroll to Top Button (Only visible on small and extra-small screen sizes) -->
 
 <!-- Bootstrap core JavaScript -->

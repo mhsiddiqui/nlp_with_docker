@@ -213,10 +213,17 @@ function save_form_data() {
         for (var i = 0; i < all_cards.length; i++) {
             var card = all_cards[i];
             if ($(card).attr('data-type') == 1 || $(card).attr('data-type') == 2) {
-                form_data.push(get_mdrt_question_data(card));
+                var card_data = get_mdrt_question_data(card);
+                if ($.inArray(card_data, form_data) == -1){
+                    form_data.push(card_data);
+                }
+
             }
             else {
-                form_data.push(get_mos_question_data(card))
+                var card_data = get_mos_question_data(card);
+                if ($.inArray(card_data, form_data) == -1){
+                    form_data.push(get_mos_question_data(card))
+                }
             }
         }
         localStorage.setItem('form_data', JSON.stringify(form_data));
@@ -325,7 +332,7 @@ function save_from() {
     };
 
     $.ajax(settings).done(function (response) {
-        alert(response);
+        show_alert('Thank You', 'Thank you for evaluating', 'redirect_to_main_page');
     });
 
 }
@@ -356,4 +363,19 @@ function play_sound(id, text, no_of_times) {
             alert('There is some error');
         });
 
+}
+
+
+function show_alert(heading, body, close_action) {
+    $('#model-heading').empty().text(heading);
+    $('#model-content').empty().text(body);
+    var model = $('#alert-model');
+    model.modal('show');
+    model.on('hidden.bs.modal', function () {
+        window[close_action]();
+    });
+}
+
+function redirect_to_main_page() {
+    location.href = '/tts/evaluate/';
 }

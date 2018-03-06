@@ -44,6 +44,7 @@ INSTALLED_APPS = [
     'rest_framework',
     'tts',
     'celery',
+    'error_report'
     # 'storages',
     # 'django_ftpserver'
 ]
@@ -61,6 +62,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'error_report.middleware.ExceptionProcessor'
     # 'whitenoise.middleware.WhiteNoiseMiddleware'
 ]
 
@@ -186,3 +188,7 @@ EMAIL_HOST_USER = 'info.ballogy@gmail.com'
 EMAIL_HOST_PASSWORD = 'ballogy2k18'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
+
+ERROR_DETAIL_SETTINGS = {
+    "ERROR_DETAIL_HEIGHT": 5000
+}

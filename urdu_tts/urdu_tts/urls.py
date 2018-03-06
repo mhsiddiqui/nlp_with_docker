@@ -24,6 +24,7 @@ urlpatterns = [
     url(r'^admin/', admin.site.urls),
     url(r'^$', RedirectView.as_view(url='/tts/')),
     url(r'^tts/', include('tts.urls')),
+    url(r'^error/', include('error_report.urls')),
 ]
 
 if settings.DEBUG:
