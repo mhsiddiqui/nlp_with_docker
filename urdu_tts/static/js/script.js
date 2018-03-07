@@ -2,6 +2,9 @@
  * Created by mhassan on 8/30/17.
  */
 $(document).ready(function () {
+    if(jQuery.browser.mobile){
+        $('#browser-alert').show();
+    }
     $('.tooltip-div').tooltip();
 });
 
