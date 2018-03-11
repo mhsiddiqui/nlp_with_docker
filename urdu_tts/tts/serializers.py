@@ -142,6 +142,7 @@ class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         record = self.context.get('record')
         form_data = []
+        already_processed = []
         for question in validated_data:
             tmp = {
                 'record': record,
@@ -151,7 +152,8 @@ class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
                 'overall': self.get_property_rating('overall', question),
                 'answer_id': question.get('answer')
             }
-            if EvaluationResult(**tmp) not in form_data:
+            if question.get('question') not in already_processed:
+                already_processed.append(question.get('question'))
                 form_data.append(EvaluationResult(**tmp))
         return EvaluationResult.objects.bulk_create(form_data)
 

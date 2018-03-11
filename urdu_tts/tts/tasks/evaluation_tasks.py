@@ -40,12 +40,24 @@ def evaluation_form_post_processing(*args, **kwargs):
 
     record_obj = EvaluationRecord.objects.filter(id=record)
     record_obj.update(**mos_result)
+    drt_result = format_data(drt_result)
+    mrt_result = format_data(mrt_result)
     mdrt = {
         'drt': float(drt_result.get('drt'))/float(drt_result.get('total')),
         'mrt': float(mrt_result.get('mrt'))/float(drt_result.get('total'))
     }
     record_obj.update(**mdrt)
     record_obj.update(status=3)
+
+
+def format_data(data):
+    tmp = dict()
+    for key, val in data.items():
+        if key == 'total':
+            tmp[key] = val if val != 0 else 1
+        else:
+            tmp[key] = val if val else 0
+    return tmp
 
 
 @app.task

@@ -120,6 +120,20 @@ class EvaluationResult(models.Model):
 
     timestamp = models.DateTimeField(auto_now_add=True)
 
+    def __unicode__(self):
+        if self.question.type in [1, 2]:
+            formatted_string = '{0}/{1}/{2}'.format(
+                self.question.text.encode('utf-8', 'ignore').decode('utf-8'),
+                self.answer.text.encode('utf-8', 'ignore').decode('utf-8'),
+                self.correct)
+        else:
+            formatted_string = '{0}/I-{1}/N-{2}/O-{3}'.format(
+                self.question.text.encode('utf-8', 'ignore').decode('utf-8'),
+                self.intelligibility,
+                self.naturalness,
+                self.overall)
+        return formatted_string
+
 
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)
 def remove_media_from_storage(sender, instance, **kwargs):
