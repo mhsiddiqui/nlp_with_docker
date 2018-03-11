@@ -43,6 +43,9 @@ class GeneratedVoice(models.Model):
     ip = models.CharField(default='', max_length=100)
     voice = models.CharField(default='', max_length=200)
 
+    def __unicode__(self):
+        return '{0} - {1}'.format(self.text.encode('utf-8', 'ignore').decode('utf-8'), self.voice)
+
 
 class QuestionOption(models.Model):
     text = models.CharField(max_length=200)
@@ -102,7 +105,7 @@ class EvaluationRecord(models.Model):
     overall = models.FloatField(default=0.0)
 
     def __str__(self):
-        return '%s -- %s' % (self.name, self.email)
+        return self.email
 
 
 class EvaluationResult(models.Model):
