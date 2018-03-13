@@ -102,20 +102,6 @@ class EvaluationQuestionsView(generics.GenericAPIView):
         else:
             return response.Response(status=status.HTTP_404_NOT_FOUND)
 
-    def get_paginated_data(self, page):
-        question_type = 1
-        page_data = None
-        if not page:
-            question_type = 1
-        while question_type <= dict(QUESTION_TYPE).keys()[-1]:
-            questions = EvaluationQuestion.objects.all().order_by('id')
-            page_data = self.paginate_queryset(questions)
-            if not page_data:
-                question_type += 1
-            else:
-                break
-        return page_data, question_type
-
 
 class EvaluationQuestionsViewHTML(EvaluationQuestionsView):
     renderer_classes = [renderers.TemplateHTMLRenderer]

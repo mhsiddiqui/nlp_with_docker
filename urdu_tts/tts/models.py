@@ -142,3 +142,10 @@ class EvaluationResult(models.Model):
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)
 def remove_media_from_storage(sender, instance, **kwargs):
     instance.file.delete(save=False)
+
+
+@receiver(models.signals.post_save, sender=EvaluationResult)
+def update_test_overall_score(sender, instance, **kwargs):
+    from tts.utils import UtilMethods
+    form_record = instance.record_id
+    UtilMethods.add_task_in_queue('evaluation_form_post_processing', countdown=0, record=form_record)

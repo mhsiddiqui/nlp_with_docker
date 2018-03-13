@@ -33,7 +33,7 @@ $('#play_sound').click(function () {
             "data": {
                 "text": urdu_text_area,
                 "voice": $("input[name='voice_option']:checked").val(),
-                "evaluation": false,
+                "evaluation": false
             }
         };
 
@@ -128,11 +128,9 @@ function submit_personal_info_section() {
         "data": data
     };
     $.ajax(settings).done(function (response) {
-        show_hide_loading_icon('hide');
         var json_response = JSON.parse(response);
         localStorage.setItem('form', json_response.id);
         evaluation_form_questions(json_response.next_url);
-        $('#instruction').show();
     }).fail(function (response) {
         var json_response = JSON.parse(response.responseText);
         for (var key in json_response) {
@@ -155,6 +153,8 @@ function evaluation_form_questions(url) {
     $.ajax(settings).done(function (response) {
         $('#evaluation-form-div').empty().append(response);
         show_hide_loading_icon('hide');
+        $('#instruction').show();
+        $('html, body').animate({scrollTop:0}, 'slow');
     }).fail(function (response) {
         if (response.status == 404){
             var nfe = $('#not_found_error');
@@ -206,6 +206,8 @@ function next_section(intro_r_questions_url) {
             var form_error = $('#form-error');
             form_error.empty().append('Fill Highlighted Sections');
             form_error.show();
+            show_hide_loading_icon('hide');
+            $('html, body').animate({scrollTop:0}, 'slow');
         }
     }
 }
@@ -356,7 +358,8 @@ function play_sound(id, text, no_of_times) {
         "method": "POST",
         "data": {
             "text": text,
-            "voice": 'voice_pucit_indic_urs_cg'
+            "voice": 'voice_pucit_indic_urs_cg',
+            "evaluation": true
         }
     };
 

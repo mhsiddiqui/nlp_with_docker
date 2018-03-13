@@ -2,8 +2,21 @@ import os
 import subprocess
 
 from django.db import transaction
+from rest_framework import pagination
+from rest_framework.response import Response
 from urdu_tts.settings import BASE_DIR, DEBUG
 import tts.tasks as tasks
+
+
+class CustomPagination(pagination.LimitOffsetPagination):
+    def get_paginated_response(self, data):
+        return Response({
+            'offset': self.offset,
+            'next': self.get_next_link(),
+            'previous': self.get_previous_link(),
+            'count': self.count,
+            'results': data
+        })
 
 
 class UtilMethods(object):

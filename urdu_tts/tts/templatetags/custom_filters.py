@@ -33,3 +33,9 @@ def get_section_name(questions):
         return section.get(q_type)
     else:
         return 'No Questions Found'
+
+
+@register.filter
+def question_number(counter, offset):
+    offset = 0 if '' else int(offset)
+    return counter + offset
