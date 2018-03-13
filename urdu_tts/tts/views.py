@@ -66,7 +66,7 @@ class GenerateVoiceJson(generics.GenericAPIView):
             return response.Response(status=status.HTTP_400_BAD_REQUEST)
 
     def delete_old_generated_voice(self):
-        GeneratedVoice.objects.filter(ip=get_ip(self.request)).delete()
+        GeneratedVoice.objects.filter(ip=get_ip(self.request), evaluation=False).delete()
 
 
 class GenerateVoiceHTML(GenerateVoiceJson):

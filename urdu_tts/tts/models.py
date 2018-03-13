@@ -4,7 +4,7 @@ import re
 
 from django.db import models
 from django.dispatch import receiver
-from storages.backends.ftp import FTPStorage
+
 
 # fs = FTPStorage()
 
@@ -42,6 +42,7 @@ class GeneratedVoice(models.Model):
     time = models.DateTimeField(auto_now_add=True)
     ip = models.CharField(default='', max_length=100)
     voice = models.CharField(default='', max_length=200)
+    evaluation = models.BooleanField(default=False)
 
 
 class QuestionOption(models.Model):

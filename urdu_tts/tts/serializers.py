@@ -59,11 +59,13 @@ class GenerateVoiceSerializer(serializers.Serializer):
 
     def save_file_to_db(self, file_path, text, voice):
         request = self.context.get('request')
+        evaluation = request.data.get('evaluation')
         _file = open(file_path)
         generated_voice = GeneratedVoice.objects.create(
             text=text,
             ip=get_ip(request),
-            voice=voice
+            voice=voice,
+            evaluation=evaluation
         )
         generated_voice.file.save('out.wav', _file)
         return generated_voice

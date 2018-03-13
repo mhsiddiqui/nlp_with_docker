@@ -29,7 +29,8 @@ $('#play_sound').click(function () {
             "method": "POST",
             "data": {
                 "text": urdu_text_area,
-                "voice": $("input[name='voice_option']:checked").val()
+                "voice": $("input[name='voice_option']:checked").val(),
+                "evaluation": false,
             }
         };
 
@@ -57,7 +58,8 @@ function play_evaluation_sound(sound_id) {
         "method": "POST",
         "data": {
             "text": urdu_text_area,
-            "voice": $("input[name='voice_option']:checked").val()
+            "voice": $("input[name='voice_option']:checked").val(),
+            "evaluation": true
         }
     };
 
