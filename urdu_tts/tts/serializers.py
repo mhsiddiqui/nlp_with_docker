@@ -33,7 +33,7 @@ class GenerateVoiceSerializer(serializers.Serializer):
             generated_voice = self.generate_voice(text_input_file, uuid_str, voice)
         except Exception as e:
             raise serializers.ValidationError(e)
-        saved_obj = self.save_file_to_db(generated_voice, text, voice)
+        saved_obj = self.save_file_to_db(generated_voice, text, voice, validated_data.get('evaluation'))
         self.delete_temp_files(text_input_file, generated_voice)
         return saved_obj
 
@@ -58,9 +58,8 @@ class GenerateVoiceSerializer(serializers.Serializer):
             raise serializers.ValidationError(command_output)
         return '%s/tmp/output/%s' % (BASE_DIR, output_file)
 
-    def save_file_to_db(self, file_path, text, voice):
+    def save_file_to_db(self, file_path, text, voice, evaluation):
         request = self.context.get('request')
-        evaluation = request.data.get('evaluation')
         _file = open(file_path)
         generated_voice = GeneratedVoice.objects.create(
             text=text,
