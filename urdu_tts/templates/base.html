@@ -57,9 +57,9 @@
                     <a class="nav-link" href="{% url 'evaluation_result' %}">Evaluation Result</a>
                 </li>
             {% endif %}
-            <li class="nav-item {% if navlink == 'api' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'tts-api' %}">API</a>
-            </li>
+{#            <li class="nav-item {% if navlink == 'api' %}active{% endif %}">#}
+{#                <a class="nav-link" href="{% url 'tts-api' %}">API</a>#}
+{#            </li>#}
         </ul>
         {% if not request.user.is_authenticated %}
             <ul class="navbar-nav justify-content-end">
@@ -70,12 +70,21 @@
         {% else %}
             <ul class="navbar-nav justify-content-end">
                 <li class="nav-item">
+                    <a class="nav-link" href="/admin/">Admin</a>
+                </li>
+                <li class="nav-item">
                     <a class="nav-link" href="/admin/logout/">Logout</a>
                 </li>
             </ul>
         {% endif %}
     </div>
 </nav>
+<div class="alert alert-danger alert-dismissible fade show" role="alert" style="display: none" id="browser-alert">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+        <span aria-hidden="true">&times;</span>
+    </button>
+    <strong>Alert!</strong> Kindly use Desktop browser to get best results. Website may not work properly on mobile browsers.
+</div>
 <div class="container-fluid" style="margin-top: 10px">
     {% block content %}
     {% endblock %}
@@ -108,6 +117,7 @@
 <script type="text/javascript" src="{% static 'js/popper.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/tether.min.js' %}"></script>
 <script type="text/javascript" src="{% static 'js/bootstrap.min.js' %}"></script>
+<script type="text/javascript" src="{% static 'js/detect_mobile.js' %}"></script>
 
 <script type="text/javascript" src="{% static 'js/script.js' %}"></script>
 

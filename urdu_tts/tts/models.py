@@ -44,6 +44,9 @@ class GeneratedVoice(models.Model):
     voice = models.CharField(default='', max_length=200)
     evaluation = models.BooleanField(default=False)
 
+    def __unicode__(self):
+        return '{0} - {1}'.format(self.text.encode('utf-8', 'ignore').decode('utf-8'), self.voice)
+
 
 class QuestionOption(models.Model):
     text = models.CharField(max_length=200)
@@ -103,7 +106,7 @@ class EvaluationRecord(models.Model):
     overall = models.FloatField(default=0.0)
 
     def __str__(self):
-        return '%s -- %s' % (self.name, self.email)
+        return self.email
 
 
 class EvaluationResult(models.Model):
@@ -120,6 +123,20 @@ class EvaluationResult(models.Model):
     correct = models.BooleanField(default=False)
 
     timestamp = models.DateTimeField(auto_now_add=True)
+
+    def __unicode__(self):
+        if self.question.type in [1, 2]:
+            formatted_string = '{0}/{1}/{2}'.format(
+                self.question.text.encode('utf-8', 'ignore').decode('utf-8'),
+                self.answer.text.encode('utf-8', 'ignore').decode('utf-8'),
+                self.correct)
+        else:
+            formatted_string = '{0}/I-{1}/N-{2}/O-{3}'.format(
+                self.question.text.encode('utf-8', 'ignore').decode('utf-8'),
+                self.intelligibility,
+                self.naturalness,
+                self.overall)
+        return formatted_string
 
 
 @receiver(models.signals.pre_delete, sender=GeneratedVoice)

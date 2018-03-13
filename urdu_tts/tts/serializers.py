@@ -87,12 +87,25 @@ class GeneratedVoiceSerializer(serializers.ModelSerializer):
 
 
 class EvaluationRecordSerializer(serializers.ModelSerializer):
+    email = serializers.CharField(allow_null=False, required=True)
     gender = serializers.CharField(allow_null=False, required=True)
     age = serializers.CharField(allow_null=False, required=True)
     next_url = serializers.SerializerMethodField(read_only=True)
 
     def get_next_url(self, instance):
         return reverse('evaluation_questions_html')
+
+    def create(self, validated_data):
+        record = EvaluationRecord.objects.filter(
+            name__iexact=validated_data.get('name'),
+            email__iexact=validated_data.get('email'),
+            status=1)
+        if record.exists():
+            record.update(**validated_data)
+            record = record.first()
+        else:
+            record = super(EvaluationRecordSerializer, self).create(validated_data)
+        return record
 
     class Meta:
         model = EvaluationRecord
@@ -131,6 +144,7 @@ class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
     def create(self, validated_data):
         record = self.context.get('record')
         form_data = []
+        already_processed = []
         for question in validated_data:
             tmp = {
                 'record': record,
@@ -140,7 +154,8 @@ class EvaluationResultBulkCreateSerializer(serializers.ListSerializer):
                 'overall': self.get_property_rating('overall', question),
                 'answer_id': question.get('answer')
             }
-            if EvaluationResult(**tmp) not in form_data:
+            if question.get('question') not in already_processed:
+                already_processed.append(question.get('question'))
                 form_data.append(EvaluationResult(**tmp))
         return EvaluationResult.objects.bulk_create(form_data)
 

@@ -2,6 +2,9 @@
  * Created by mhassan on 8/30/17.
  */
 $(document).ready(function () {
+    if(jQuery.browser.mobile){
+        $('#browser-alert').show();
+    }
     $('.tooltip-div').tooltip();
 });
 
@@ -211,24 +214,28 @@ function save_form_data() {
     var all_cards = $('.card');
     var form_valid = check_all_question_are_answered(all_cards);
     if (form_valid) {
-        var form_data = get_previously_saved_data();
+        var form_data = get_previously_saved_data('form_data');
+        var processed = get_previously_saved_data('processed');
         for (var i = 0; i < all_cards.length; i++) {
             var card = all_cards[i];
             if ($(card).attr('data-type') == 1 || $(card).attr('data-type') == 2) {
                 var card_data = get_mdrt_question_data(card);
-                if ($.inArray(card_data, form_data) == -1){
+                if ($.inArray(card_data.question, processed) == -1){
                     form_data.push(card_data);
+                    processed.push(card_data.question)
                 }
 
             }
             else {
                 var card_data = get_mos_question_data(card);
-                if ($.inArray(card_data, form_data) == -1){
-                    form_data.push(get_mos_question_data(card))
+                if ($.inArray(card_data.question, processed) == -1){
+                    form_data.push(get_mos_question_data(card));
+                    processed.push(card_data.question);
                 }
             }
         }
         localStorage.setItem('form_data', JSON.stringify(form_data));
+        localStorage.setItem('processed', JSON.stringify(processed));
         return true;
     }
     else {
@@ -297,8 +304,8 @@ function get_mos_question_data(question) {
     return data;
 }
 
-function get_previously_saved_data() {
-    var form_data = localStorage.getItem('form_data');
+function get_previously_saved_data(key) {
+    var form_data = localStorage.getItem(key);
     if (form_data == undefined) {
         form_data = []
     }
@@ -335,7 +342,9 @@ function save_from() {
 
     $.ajax(settings).done(function (response) {
         show_alert('Thank You', 'Thank you for evaluating', 'redirect_to_main_page');
-    });
+    }).fail(function (response) {
+            alert('There is some error');
+        });
 
 }
 
