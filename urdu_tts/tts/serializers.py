@@ -15,7 +15,7 @@ from tts.text_processor.processor import get_processed_data
 class GenerateVoiceSerializer(serializers.Serializer):
     voice = serializers.ChoiceField(choices=SOUND_OPTIONS, required=True)
     text = serializers.CharField(max_length=1000, required=True)
-    evaluation = serializers.BooleanField(required=True, default=False)
+    evaluation = serializers.BooleanField(default=False)
 
     def is_valid(self, raise_exception=False):
         data = self.initial_data
