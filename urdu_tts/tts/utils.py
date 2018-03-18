@@ -46,12 +46,13 @@ class UtilMethods(object):
         :param kwargs:
         """
         task_function = getattr(tasks, task_name)
-        if DEBUG:
-            return task_function(*args, **kwargs)
-        else:
-            transaction.on_commit(
-                lambda: getattr(task_function, 'apply_async')(args=args, kwargs=kwargs, countdown=countdown))
-            return 'Task Added'
+        return task_function(*args, **kwargs)
+        # if DEBUG:
+        #     return task_function(*args, **kwargs)
+        # else:
+        #     transaction.on_commit(
+        #         lambda: getattr(task_function, 'apply_async')(args=args, kwargs=kwargs, countdown=countdown))
+        #     return 'Task Added'
         # transaction.on_commit(
         #         lambda: getattr(task_function, 'apply_async')(args=args, kwargs=kwargs, countdown=countdown))
         # return 'Task Added'
