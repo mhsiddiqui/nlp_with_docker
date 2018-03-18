@@ -60,7 +60,7 @@ def format_data(data):
     return tmp
 
 
-@app.task
+# @app.task
 def send_test_mail(*args, **kwargs):
     html_content = '<html><body>%s</body></html>'
     tbl = '<table>'
