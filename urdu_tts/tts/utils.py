@@ -1,11 +1,14 @@
 import os
 import subprocess
 
-from django.db import transaction
+from django.db.models import Case, IntegerField
+from django.db.models import Sum, Count, Avg
+from django.db.models import When
+from tts.models import EvaluationRecord, EvaluationResult
+
 from rest_framework import pagination
 from rest_framework.response import Response
-from urdu_tts.settings import BASE_DIR, DEBUG
-import tts.tasks as tasks
+from urdu_tts.settings import BASE_DIR
 
 
 class CustomPagination(pagination.LimitOffsetPagination):
@@ -36,23 +39,55 @@ class UtilMethods(object):
         return subprocess.Popen(command, stdout=subprocess.PIPE, shell=True).stdout.read()
 
     @staticmethod
-    def add_task_in_queue(task_name, countdown=30, *args, **kwargs):
-        """
-        Start a background task. If local env, then run it in normal way for debugging
-        You should import tasks first in tasks/__init__.py
-        :param task_name: task name in string
-        :param countdown: delay in execution of task
-        :param args:
-        :param kwargs:
-        """
-        task_function = getattr(tasks, task_name)
-        return task_function(*args, **kwargs)
-        # if DEBUG:
-        #     return task_function(*args, **kwargs)
-        # else:
-        #     transaction.on_commit(
-        #         lambda: getattr(task_function, 'apply_async')(args=args, kwargs=kwargs, countdown=countdown))
-        #     return 'Task Added'
-        # transaction.on_commit(
-        #         lambda: getattr(task_function, 'apply_async')(args=args, kwargs=kwargs, countdown=countdown))
-        # return 'Task Added'
+    def evaluation_form_post_processing(*args, **kwargs):
+        record = kwargs.get('record')
+        results = EvaluationResult.objects.filter(record_id=record)
+        for result in results:
+            if result.question.type in [1, 2]:
+                if result.answer.correct:
+                    result.correct = True
+                    result.save(add_task=False)
+        mos_result = results.aggregate(
+            intelligibility=Avg('intelligibility'),
+            naturalness=Avg('naturalness'),
+            overall=Avg('overall')
+        )
+        drt_result = results.filter(question__type=1).aggregate(
+            total=Count('pk'),
+            drt=Sum(Case(
+                When(correct=True, then=1),
+                default=0,
+                output_field=IntegerField()
+            ))
+        )
+
+        mrt_result = results.filter(question__type=2).aggregate(
+            total=Count('pk'),
+            mrt=Sum(Case(
+                When(correct=True, then=1),
+                default=0,
+                output_field=IntegerField()
+            ))
+        )
+
+        record_obj = EvaluationRecord.objects.filter(id=record)
+        record_obj.update(**mos_result)
+        drt_result = UtilMethods.format_data(drt_result)
+        mrt_result = UtilMethods.format_data(mrt_result)
+        mdrt = {
+            'drt': float(drt_result.get('drt')) / float(drt_result.get('total')),
+            'mrt': float(mrt_result.get('mrt')) / float(drt_result.get('total'))
+        }
+        record_obj.update(**mdrt)
+        record_obj.update(status=3)
+
+    @staticmethod
+    def format_data(data):
+        tmp = dict()
+        for key, val in data.items():
+            if key == 'total':
+                tmp[key] = val if val != 0 else 1
+            else:
+                tmp[key] = val if val else 0
+        return tmp
+

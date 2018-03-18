@@ -16,7 +16,7 @@
                             <tr>
                                 <td style="width: 33%">
                                     <a id="text-{{ question.id }}" href="#q{{ question.id }}"
-                                       style="color: black;">{{ forloop.counter|question_number:offset }}#</a>
+                                       style="color: black;">{{ forloop.counter|question_number:offset }} of {{ count }}</a>
                                 </td>
                                 <td style="width: 33%; text-align: center">
                                 <span id="loading-icon-{{ question.id }}" style="display: none"><i
@@ -67,7 +67,7 @@
                             <tr>
                                 <td style="width: 33%">
                                     <a id="text-{{ question.id }}" href="#q{{ question.id }}"
-                                       style="color: black;">{{ forloop.counter|question_number:offset }}#</a>
+                                       style="color: black;">{{ forloop.counter|question_number:offset }} of {{ count }}</a>
                                 </td>
                                 <td style="width: 33%; text-align: center">
                                 <span id="loading-icon-{{ question.id }}" style="display: none"><i

@@ -130,7 +130,7 @@ class EvaluationFormSubmit(generics.GenericAPIView):
             serializer = self.serializer_class(data=request.data, context={'record': record.first()}, many=True)
             if serializer.is_valid():
                 serializer.save()
-                UtilMethods.add_task_in_queue('evaluation_form_post_processing', countdown=0, record=form)
+                UtilMethods.evaluation_form_post_processing(record=form)
                 return response.Response(status=status.HTTP_200_OK)
             return response.Response(status=status.HTTP_404_NOT_FOUND)
         else:
@@ -179,8 +179,3 @@ class DownloadView(TemplateView):
         context = super(DownloadView, self).get_context_data(**kwargs)
         context.update({'navlink': 'download'})
         return context
-
-
-def test_view(request):
-    UtilMethods.add_task_in_queue('send_test_mail', countdown=0)
-    return HttpResponse('Sent')
