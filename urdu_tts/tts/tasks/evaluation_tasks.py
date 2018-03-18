@@ -2,11 +2,11 @@ from django.core.mail import EmailMultiAlternatives
 from django.db.models import Case, IntegerField
 from django.db.models import Sum, Count, Avg
 from django.db.models import When
-from urdu_tts.celery import app
+# from urdu_tts.celery import app
 from tts.models import EvaluationRecord, EvaluationResult
 
 
-@app.task
+# @app.task
 def evaluation_form_post_processing(*args, **kwargs):
     record = kwargs.get('record')
     results = EvaluationResult.objects.filter(record_id=record)

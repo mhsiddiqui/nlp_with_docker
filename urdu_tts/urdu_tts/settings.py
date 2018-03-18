@@ -43,7 +43,6 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'rest_framework',
     'tts',
-    'celery',
     'error_report'
     # 'storages',
     # 'django_ftpserver'
@@ -174,13 +173,6 @@ REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'tts.utils.CustomPagination',
     'PAGE_SIZE': 5
 }
-
-CELERY_BROKER_URL = 'redis://%s:6379/0' % os.environ.get('CELERY_SERVER', 'localhost')
-CELERY_RESULT_BACKEND = 'redis://%s:6379/0' % os.environ.get('CELERY_SERVER', 'localhost')
-CELERY_ACCEPT_CONTENT = ['application/json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERY_TIMEZONE = TIME_ZONE
 
 
 EMAIL_HOST = 'smtp.gmail.com'
