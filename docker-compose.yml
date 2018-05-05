@@ -34,7 +34,7 @@ services:
     image: tts-image
     container_name: tts-app
     environment:
-      - DEBUG=False
+      - DEBUG=True
       - STATICFILES_STORAGE=whitenoise.storage.CompressedManifestStaticFilesStorage
       - DATABASE=db
       - POSTGRES_USER=postgres
