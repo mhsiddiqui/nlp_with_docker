@@ -171,7 +171,7 @@ SOUND_OPTIONS = (
 
 REST_FRAMEWORK = {
     'DEFAULT_PAGINATION_CLASS': 'tts.utils.CustomPagination',
-    'PAGE_SIZE': 5
+    'PAGE_SIZE': 7
 }
 
 
