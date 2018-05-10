@@ -138,7 +138,7 @@ class EvaluationFormSubmit(generics.GenericAPIView):
 
 
 class EvaluationResultView(ListView):
-    paginate_by = 10
+    paginate_by = 7
     template_name = 'tts/evaluation_result.html'
 
     @method_decorator(login_required)
