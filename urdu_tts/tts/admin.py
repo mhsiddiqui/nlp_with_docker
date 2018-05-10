@@ -21,8 +21,12 @@ class EvaluationResultAdmin(admin.ModelAdmin):
     list_filter = ['question__type', 'record']
 
 
+class QuestionOptionAdmin(admin.ModelAdmin):
+    list_display = ['text', 'correct']
+
+
 admin.site.register(EvaluationQuestion, EvaluationQuestionAdmin)
-admin.site.register(QuestionOption)
+admin.site.register(QuestionOption, QuestionOptionAdmin)
 admin.site.register(GeneratedVoice)
 admin.site.register(EvaluationRecord, EvaluationRecordAdmin)
 admin.site.register(EvaluationResult, EvaluationResultAdmin)
