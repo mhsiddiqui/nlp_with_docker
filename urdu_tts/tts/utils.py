@@ -76,7 +76,7 @@ class UtilMethods(object):
         mrt_result = UtilMethods.format_data(mrt_result)
         mdrt = {
             'drt': float(drt_result.get('drt')) / float(drt_result.get('total')),
-            'mrt': float(mrt_result.get('mrt')) / float(drt_result.get('total'))
+            'mrt': float(mrt_result.get('mrt')) / float(mrt_result.get('total'))
         }
         record_obj.update(**mdrt)
         record_obj.update(status=3)
