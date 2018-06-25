@@ -13,7 +13,7 @@ class EvaluationQuestionAdmin(admin.ModelAdmin):
 
 class EvaluationRecordAdmin(admin.ModelAdmin):
     list_display = ['email', 'mrt', 'drt', 'intelligibility', 'naturalness', 'overall', 'status', 'timestamp']
-    list_filter = ['gender', 'age']
+    list_filter = ['gender', 'age', 'status']
 
 
 class EvaluationResultAdmin(admin.ModelAdmin):
