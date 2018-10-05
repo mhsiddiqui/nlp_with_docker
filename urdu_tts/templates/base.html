@@ -49,9 +49,6 @@
             <li class="nav-item {% if navlink == 'evaluate' %}active{% endif %}">
                 <a class="nav-link" href="{% url 'evaluate-page' %}">Evaluate</a>
             </li>
-            <li class="nav-item {% if navlink == 'download' %}active{% endif %}">
-                <a class="nav-link" href="{% url 'tts-download' %}">Download</a>
-            </li>
             {% if request.user.is_authenticated %}
                 <li class="nav-item {% if navlink == 'evaluation_result' %}active{% endif %}">
                     <a class="nav-link" href="{% url 'evaluation_result' %}">Evaluation Result</a>
